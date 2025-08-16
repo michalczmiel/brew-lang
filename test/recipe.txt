@@ -1,4 +1,4 @@
-temperature 86..90
+temperature 86..22
 dose 14.5
 water 260
 

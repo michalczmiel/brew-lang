@@ -2,6 +2,8 @@ import { basicSetup } from "codemirror";
 import { EditorView } from "@codemirror/view";
 import { StreamLanguage } from "@codemirror/language";
 
+import { grammar } from "./grammar.mjs";
+
 const myLanguage = StreamLanguage.define({
   token(stream, state) {
     // Keywords
@@ -33,10 +35,23 @@ step {
 
 window.addEventListener("DOMContentLoaded", () => {
   const editorContainer = document.getElementById("editor");
+  const consoleContainer = document.getElementById("console");
+
+  const updateListener = EditorView.updateListener.of((update) => {
+    if (update.docChanged) {
+      const match = grammar.match(update.state.doc.toString());
+
+      if (match.succeeded()) {
+        consoleContainer.textContent = "";
+      } else {
+        consoleContainer.textContent = match.message;
+      }
+    }
+  });
 
   const view = new EditorView({
     doc: recipe,
     parent: editorContainer,
-    extensions: [basicSetup, myLanguage],
+    extensions: [basicSetup, myLanguage, updateListener],
   });
 });

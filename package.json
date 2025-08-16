@@ -1,18 +1,19 @@
 {
   "name": "brew-lang",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Learning project for coffee brewing language",
+  "main": "src/main.mjs",
   "scripts": {
-    "develop": "vite"
+    "develop": "vite",
+    "test": "node --test"
   },
-  "keywords": [],
   "author": "Michał Czmiel",
   "license": "MIT",
   "dependencies": {
     "@codemirror/language": "^6.11.3",
     "@codemirror/view": "^6.38.1",
-    "codemirror": "^6.0.2"
+    "codemirror": "^6.0.2",
+    "ohm-js": "^17.2.1"
   },
   "devDependencies": {
     "vite": "^7.1.2"

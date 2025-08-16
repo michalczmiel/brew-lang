@@ -17,6 +17,9 @@ importers:
       codemirror:
         specifier: ^6.0.2
         version: 6.0.2
+      ohm-js:
+        specifier: ^17.2.1
+        version: 17.2.1
     devDependencies:
       vite:
         specifier: ^7.1.2
@@ -346,6 +349,10 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  ohm-js@17.2.1:
+    resolution: {integrity: sha512-4cXF0G09fAYU9z61kTfkNbKK1Kz/sGEZ5NbVWHoe9Qi7VB7y+Spwk051CpUTfUENdlIr+vt8tMV4/LosTE2cDQ==}
+    engines: {node: '>=0.12.1'}
+
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
 
@@ -665,6 +672,8 @@ snapshots:
     optional: true
 
   nanoid@3.3.11: {}
+
+  ohm-js@17.2.1: {}
 
   picocolors@1.1.1: {}
 
