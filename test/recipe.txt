@@ -1,9 +1,0 @@
-temperature 86..22
-dose 14.5
-water 260
-
-step {
-  start 0:00
-  end 0:30
-  pour 10
-}

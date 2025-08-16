@@ -1,18 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 
 import { grammar } from "../src/grammar.mjs";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { glitchCoffeeOrigamiHot } from "../src/recipes.mjs";
 
 test("correctly parses full valid recipe", async () => {
-  const file = await readFile(path.join(__dirname, "recipe.txt"));
-
-  const match = grammar.match(file.toString());
+  const match = grammar.match(glitchCoffeeOrigamiHot);
 
   if (!match.succeeded()) {
     assert.fail(match.message);

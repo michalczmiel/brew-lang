@@ -9,10 +9,11 @@ export const grammar = ohm.grammar(String.raw`
     water = "water" " " number newline?
 
     step = "step" " " "{" newline? instruction+ " "* "}"
-    instruction = " "* (start | stepEnd | pour) newline
+    instruction = " "* (start | finish | pour | duration) newline
 
-    stepEnd = "end" " " duration
-    start = "start" " " duration
+    duration = "duration" " " duration_number
+    finish = "finish" " " duration_number
+    start = "start" " " duration_number
     pour = "pour" " " number
 
     newline = "\n"
@@ -22,6 +23,6 @@ export const grammar = ohm.grammar(String.raw`
     real_number = digit+ "." digit+
 
     range = number "." "." number
-    duration = whole_number ":" whole_number
+    duration_number = whole_number ":" whole_number
   }
 `);
