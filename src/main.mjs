@@ -1,31 +1,9 @@
 import { basicSetup } from "codemirror";
 import { EditorView } from "@codemirror/view";
-import { StreamLanguage } from "@codemirror/language";
 
 import { grammar } from "./grammar.mjs";
 import { glitchCoffeeOrigamiHot } from "./recipes.mjs";
-
-const myLanguage = StreamLanguage.define({
-  token(stream, state) {
-    // Keywords
-    if (
-      stream.match(
-        /\b(temperature|dose|water|start|finish|step|pour|duration)\b/,
-      )
-    ) {
-      return "keyword";
-    }
-
-    // Numbers
-    if (stream.match(/\b\d+(\.\d+)?\b/)) {
-      return "number";
-    }
-
-    // Skip one character if no match
-    stream.next();
-    return null;
-  },
-});
+import { highlighting } from "./highlighting.mjs";
 
 window.addEventListener("DOMContentLoaded", () => {
   const editorContainer = document.getElementById("editor");
@@ -46,6 +24,6 @@ window.addEventListener("DOMContentLoaded", () => {
   new EditorView({
     doc: glitchCoffeeOrigamiHot,
     parent: editorContainer,
-    extensions: [basicSetup, myLanguage, updateListener],
+    extensions: [basicSetup, highlighting, updateListener],
   });
 });
