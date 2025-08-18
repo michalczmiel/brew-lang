@@ -11,6 +11,9 @@ window.addEventListener("DOMContentLoaded", () => {
   const consoleContainer = document.getElementById("console");
   const vimToggle = document.getElementById("vim-toggle");
 
+  const vimModeEnabled = localStorage.getItem("vim-mode") === "true";
+  vimToggle.checked = vimModeEnabled;
+
   const updateListener = EditorView.updateListener.of((update) => {
     if (update.docChanged) {
       const match = grammar.match(update.state.doc.toString());
@@ -38,12 +41,17 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  editor = createEditor({ useVim: false, doc: glitchCoffeeOrigamiHot });
+  editor = createEditor({
+    useVim: vimModeEnabled,
+    doc: glitchCoffeeOrigamiHot,
+  });
+  editor.focus();
 
   vimToggle.addEventListener("change", (event) => {
     const currentDoc = editor.state.doc.toString();
     editor.destroy();
 
+    localStorage.setItem("vim-mode", event.target.checked);
     editor = createEditor({ useVim: event.target.checked, doc: currentDoc });
     editor.dispatch({
       changes: { from: 0, to: editor.state.doc.length, insert: currentDoc },
