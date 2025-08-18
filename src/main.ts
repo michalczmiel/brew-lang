@@ -2,6 +2,7 @@ import { basicSetup } from "codemirror";
 import { EditorView, keymap } from "@codemirror/view";
 import { vim } from "@replit/codemirror-vim";
 import { indentWithTab } from "@codemirror/commands";
+import { oneDark } from "@codemirror/theme-one-dark";
 
 import { grammar } from "./grammar.js";
 import { glitchCoffeeOrigamiHot } from "./recipes.js";
@@ -12,14 +13,33 @@ window.addEventListener("DOMContentLoaded", () => {
   const editorContainer = document.getElementById("editor");
   const consoleContainer = document.getElementById("console");
   const vimToggle = document.getElementById("vim-toggle") as HTMLInputElement;
+  const darkToggle = document.getElementById("dark-toggle") as HTMLInputElement;
 
-  if (!editorContainer || !consoleContainer || !vimToggle) {
+  if (!editorContainer || !consoleContainer || !vimToggle || !darkToggle) {
     console.error("Required elements not found in the DOM.");
     return;
   }
 
   const vimModeEnabled = localStorage.getItem("vim-mode") === "true";
   vimToggle.checked = vimModeEnabled;
+
+  // Detect system dark mode preference
+  const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const storedDarkMode = localStorage.getItem("dark-mode");
+  const darkModeEnabled = storedDarkMode ? storedDarkMode === "true" : systemPrefersDark;
+  darkToggle.checked = darkModeEnabled;
+
+  // Function to update body dark class
+  function updateDarkMode(isDark: boolean) {
+    if (isDark) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
+  }
+
+  // Set initial dark mode
+  updateDarkMode(darkModeEnabled);
 
   const semantics = newSemantics(grammar);
 
@@ -54,9 +74,11 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function createEditor({
     useVim,
+    useDark,
     doc,
   }: {
     useVim: boolean;
+    useDark: boolean;
     doc: string;
   }): EditorView {
     const extensions = [
@@ -71,6 +93,9 @@ window.addEventListener("DOMContentLoaded", () => {
     if (useVim) {
       extensions.unshift(vim());
     }
+    if (useDark) {
+      extensions.push(oneDark);
+    }
 
     return new EditorView({
       doc,
@@ -81,6 +106,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   editor = createEditor({
     useVim: vimModeEnabled,
+    useDark: darkModeEnabled,
     doc: glitchCoffeeOrigamiHot,
   });
   editor.focus();
@@ -99,6 +125,29 @@ window.addEventListener("DOMContentLoaded", () => {
     );
     editor = createEditor({
       useVim: (event.target as HTMLInputElement).checked,
+      useDark: darkToggle.checked,
+      doc: currentDoc,
+    });
+    editor.dispatch({
+      changes: { from: 0, to: editor.state.doc.length, insert: currentDoc },
+    });
+  });
+
+  darkToggle.addEventListener("change", (event) => {
+    if (!event.target) {
+      return;
+    }
+
+    const isDark = (event.target as HTMLInputElement).checked;
+    const currentDoc = editor.state.doc.toString();
+    editor.destroy();
+
+    localStorage.setItem("dark-mode", isDark.toString());
+    updateDarkMode(isDark);
+    
+    editor = createEditor({
+      useVim: vimToggle.checked,
+      useDark: isDark,
       doc: currentDoc,
     });
     editor.dispatch({

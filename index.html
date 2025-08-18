@@ -5,6 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>brewlang</title>
     <style>
+      :root {
+        --bg-color: #ffffff;
+        --text-color: #000000;
+        --border-color: #ccc;
+        --sidebar-bg: #f9f9f9;
+      }
+
+      body.dark {
+        --bg-color: #0d1117;
+        --text-color: #f0f6fc;
+        --border-color: #30363d;
+        --sidebar-bg: #161b22;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        margin: 0;
+        font-family: system-ui, sans-serif;
+      }
+
       .app-container {
         display: flex;
         height: 100vh;
@@ -16,11 +37,22 @@
         min-width: 0;
       }
 
+      .controls {
+        margin-bottom: 10px;
+      }
+
+      .controls label {
+        color: var(--text-color);
+        margin-right: 20px;
+        font-size: 14px;
+      }
+
       .error-sidebar {
         width: 300px;
         padding: 10px;
-        border-left: 1px solid #ccc;
-        background-color: #f9f9f9;
+        border-left: 1px solid var(--border-color);
+        background-color: var(--sidebar-bg);
+        color: var(--text-color);
       }
 
       .error-sidebar h3 {
@@ -44,7 +76,7 @@
         .error-sidebar {
           width: auto;
           border-left: none;
-          border-top: 1px solid #ccc;
+          border-top: 1px solid var(--border-color);
         }
       }
     </style>
@@ -53,10 +85,11 @@
   <body>
     <div class="app-container">
       <main class="editor-section">
-        <div style="margin-bottom: 10px">
+        <div class="controls">
           <label>
             <input type="checkbox" id="vim-toggle" /> Enable Vim Mode
           </label>
+          <label> <input type="checkbox" id="dark-toggle" /> Dark Mode </label>
         </div>
         <div id="editor"></div>
       </main>
