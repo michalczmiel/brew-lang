@@ -9,8 +9,8 @@ export const grammar = ohm.grammar(String.raw`
     temperature = "temperature" " " (range | number)+ newline?
     water = "water" " " number newline?
 
-    step = "step" " " "{" newline? instruction+ " "* "}"
-    instruction = " "* (time_instruction | pour | comment) newline
+    step = "step" newline? instruction+ "end" newline?
+    instruction = " "* (time_instruction | pour | comment) (newline | " " | &"end")
 
     time_instruction = ("duration" | "start" | "finish") " " duration_number
     pour = "pour" " " number
