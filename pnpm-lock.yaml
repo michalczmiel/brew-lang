@@ -14,6 +14,9 @@ importers:
       '@codemirror/view':
         specifier: ^6.38.1
         version: 6.38.1
+      '@replit/codemirror-vim':
+        specifier: ^6.3.0
+        version: 6.3.0(@codemirror/commands@6.8.1)(@codemirror/language@6.11.3)(@codemirror/search@6.5.11)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)
       codemirror:
         specifier: ^6.0.2
         version: 6.0.2
@@ -215,6 +218,15 @@ packages:
 
   '@marijn/find-cluster-break@1.0.2':
     resolution: {integrity: sha512-l0h88YhZFyKdXIFNfSWpyjStDjGHwZ/U7iobcK1cQQD8sejsONdQtTVU+1wVN1PBw40PiiHB1vA5S7VTfQiP9g==}
+
+  '@replit/codemirror-vim@6.3.0':
+    resolution: {integrity: sha512-aTx931ULAMuJx6xLf7KQDOL7CxD+Sa05FktTDrtLaSy53uj01ll3Zf17JdKsriER248oS55GBzg0CfCTjEneAQ==}
+    peerDependencies:
+      '@codemirror/commands': 6.x.x
+      '@codemirror/language': 6.x.x
+      '@codemirror/search': 6.x.x
+      '@codemirror/state': 6.x.x
+      '@codemirror/view': 6.x.x
 
   '@rollup/rollup-android-arm-eabi@4.46.2':
     resolution: {integrity: sha512-Zj3Hl6sN34xJtMv7Anwb5Gu01yujyE/cLBDB2gnHTAHaWS1Z38L7kuSG+oAh0giZMqG060f/YBStXtMH6FvPMA==}
@@ -560,6 +572,14 @@ snapshots:
       '@lezer/common': 1.2.3
 
   '@marijn/find-cluster-break@1.0.2': {}
+
+  '@replit/codemirror-vim@6.3.0(@codemirror/commands@6.8.1)(@codemirror/language@6.11.3)(@codemirror/search@6.5.11)(@codemirror/state@6.5.2)(@codemirror/view@6.38.1)':
+    dependencies:
+      '@codemirror/commands': 6.8.1
+      '@codemirror/language': 6.11.3
+      '@codemirror/search': 6.5.11
+      '@codemirror/state': 6.5.2
+      '@codemirror/view': 6.38.1
 
   '@rollup/rollup-android-arm-eabi@4.46.2':
     optional: true
