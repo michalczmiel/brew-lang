@@ -48,3 +48,17 @@ test("correctly parses comment inside step", () => {
   const match = grammar.match(recipe);
   assert.ok(match.succeeded(), match.message);
 });
+
+test(
+  "correctly parses different brewing methods",
+  { concurrency: true },
+  (t) => {
+    const methods = ["v60", "origami", "french press", "chemex"];
+    for (const method of methods) {
+      t.test(`method ${method}`, () => {
+        const match = grammar.match(`method ${method}`);
+        assert.ok(match.succeeded(), match.message);
+      });
+    }
+  },
+);

@@ -5,6 +5,7 @@ export const glitchCoffeeOrigamiHot = `
 temperature 86..90
 dose 14.5
 water 260
+method origami
 
 step {
   start 0:00

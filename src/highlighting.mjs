@@ -10,7 +10,7 @@ export const highlighting = StreamLanguage.define({
     // Keywords
     if (
       stream.match(
-        /\b(temperature|dose|water|start|finish|step|pour|duration)\b/,
+        /\b(method|temperature|dose|water|start|finish|step|pour|duration)\b/,
       )
     ) {
       return "keyword";
