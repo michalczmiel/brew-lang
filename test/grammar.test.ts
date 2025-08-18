@@ -1,29 +1,26 @@
-import assert from "node:assert/strict";
-import { test } from "node:test";
+import { test, expect } from "vitest";
 
-import { grammar } from "../src/grammar.mjs";
-import { glitchCoffeeOrigamiHot } from "../src/recipes.mjs";
+import { grammar } from "../src/grammar.js";
+import { glitchCoffeeOrigamiHot } from "../src/recipes.js";
 
-test("correctly parses full valid recipe", async () => {
+test("correctly parses full valid recipe", () => {
   const match = grammar.match(glitchCoffeeOrigamiHot);
 
-  if (!match.succeeded()) {
-    assert.fail(match.message);
-  }
+  expect(match.succeeded(), match.message).toBeTruthy();
 });
 
 test("temperature without number", () => {
   const match = grammar.match("temperature");
 
-  assert.equal(
-    match.message,
-    `Line 1, col 12:\n> 1 | temperature\n                 ^\nExpected " "`,
+  expect(
+    match.message ===
+      `Line 1, col 12:\n> 1 | temperature\n                 ^\nExpected " "`,
   );
 });
 
 test("correctly parses single line comment", () => {
   const match = grammar.match("# This is a comment");
-  assert.ok(match.succeeded(), match.message);
+  expect(match.succeeded(), match.message).toBeTruthy();
 });
 
 test("correctly parses comment with recipe elements", () => {
@@ -34,7 +31,7 @@ temperature 94
 water 300
 `;
   const match = grammar.match(recipe);
-  assert.ok(match.succeeded(), match.message);
+  expect(match.succeeded(), match.message).toBeTruthy();
 });
 
 test("correctly parses comment inside step", () => {
@@ -46,13 +43,13 @@ test("correctly parses comment inside step", () => {
   duration 0:30
 end`;
   const match = grammar.match(recipe);
-  assert.ok(match.succeeded(), match.message);
+  expect(match.succeeded(), match.message).toBeTruthy();
 });
 
 test("correctly parses inline step format", () => {
   const recipe = `step start 0:00 finish 0:15 pour 60 end`;
   const match = grammar.match(recipe);
-  assert.ok(match.succeeded(), match.message);
+  expect(match.succeeded(), match.message).toBeTruthy();
 });
 
 test("correctly parses mixed inline and multiline step", () => {
@@ -61,19 +58,13 @@ test("correctly parses mixed inline and multiline step", () => {
   duration 0:30
 end`;
   const match = grammar.match(recipe);
-  assert.ok(match.succeeded(), match.message);
+  expect(match.succeeded(), match.message).toBeTruthy();
 });
 
-test(
+test.each(["v60", "origami", "french press", "chemex"])(
   "correctly parses different brewing methods",
-  { concurrency: true },
-  (t) => {
-    const methods = ["v60", "origami", "french press", "chemex"];
-    for (const method of methods) {
-      t.test(`method ${method}`, () => {
-        const match = grammar.match(`method ${method}`);
-        assert.ok(match.succeeded(), match.message);
-      });
-    }
+  (method) => {
+    const match = grammar.match(`method ${method}`);
+    expect(match.succeeded(), match.message).toBeTruthy();
   },
 );

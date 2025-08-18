@@ -8,8 +8,9 @@ This is a learning project for a domain-specific language (DSL) for coffee brewi
 
 ## Development Commands
 
-- **Run tests**: `pnpm test` (uses Node.js built-in test runner to run tests in `test/` directory)
+- **Run tests**: `pnpm test` (uses Vitest run tests in `test/` directory)
 - **Build project**: `pnpm build` (uses Vite for bundling)
+- **Type check**: `pnpm typecheck` (uses TypeScript for type checking)
 
 ## Architecture
 

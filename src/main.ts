@@ -2,14 +2,19 @@ import { basicSetup } from "codemirror";
 import { EditorView } from "@codemirror/view";
 import { vim } from "@replit/codemirror-vim";
 
-import { grammar } from "./grammar.mjs";
-import { glitchCoffeeOrigamiHot } from "./recipes.mjs";
-import { highlighting } from "./highlighting.mjs";
+import { grammar } from "./grammar.js";
+import { glitchCoffeeOrigamiHot } from "./recipes.js";
+import { highlighting } from "./highlighting.js";
 
 window.addEventListener("DOMContentLoaded", () => {
   const editorContainer = document.getElementById("editor");
   const consoleContainer = document.getElementById("console");
-  const vimToggle = document.getElementById("vim-toggle");
+  const vimToggle = document.getElementById("vim-toggle") as HTMLInputElement;
+
+  if (!editorContainer || !consoleContainer || !vimToggle) {
+    console.error("Required elements not found in the DOM.");
+    return;
+  }
 
   const vimModeEnabled = localStorage.getItem("vim-mode") === "true";
   vimToggle.checked = vimModeEnabled;
@@ -21,14 +26,20 @@ window.addEventListener("DOMContentLoaded", () => {
       if (match.succeeded()) {
         consoleContainer.textContent = "No errors";
       } else {
-        consoleContainer.textContent = match.message;
+        consoleContainer.textContent = match.message ?? "Syntax error";
       }
     }
   });
 
-  let editor;
+  let editor: EditorView;
 
-  function createEditor({ useVim, doc }) {
+  function createEditor({
+    useVim,
+    doc,
+  }: {
+    useVim: boolean;
+    doc: string;
+  }): EditorView {
     const extensions = [basicSetup, highlighting, updateListener];
     if (useVim) {
       extensions.unshift(vim());
@@ -36,7 +47,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     return new EditorView({
       doc,
-      parent: editorContainer,
+      parent: editorContainer!,
       extensions,
     });
   }
@@ -48,11 +59,21 @@ window.addEventListener("DOMContentLoaded", () => {
   editor.focus();
 
   vimToggle.addEventListener("change", (event) => {
+    if (!event.target) {
+      return;
+    }
+
     const currentDoc = editor.state.doc.toString();
     editor.destroy();
 
-    localStorage.setItem("vim-mode", event.target.checked);
-    editor = createEditor({ useVim: event.target.checked, doc: currentDoc });
+    localStorage.setItem(
+      "vim-mode",
+      (event.target as HTMLInputElement).checked.toString(),
+    );
+    editor = createEditor({
+      useVim: (event.target as HTMLInputElement).checked,
+      doc: currentDoc,
+    });
     editor.dispatch({
       changes: { from: 0, to: editor.state.doc.length, insert: currentDoc },
     });
