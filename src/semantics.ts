@@ -23,6 +23,42 @@ export function newSemantics(grammar: Grammar): Semantics {
       }
       return null;
     },
+    comment(hash, content) {
+      return null;
+    },
+    method(keyword, space, content, newline) {
+      return null;
+    },
+    dose(keyword, space, number, newline) {
+      return null;
+    },
+    temperature(keyword, space, value, newline) {
+      return null;
+    },
+    step(keyword, newline1, instructions, end, newline2) {
+      return null;
+    },
+    instruction(spaces, content, terminator) {
+      return null;
+    },
+    time_instruction(keyword, space, duration) {
+      return null;
+    },
+    pour(keyword, space, number) {
+      return null;
+    },
+    range(start, dot1, dot2, end) {
+      return null;
+    },
+    duration_number(minutes, colon, seconds) {
+      return null;
+    },
+    whole_number(digits) {
+      return parseFloat(this.sourceString);
+    },
+    real_number(whole, dot, decimal) {
+      return parseFloat(this.sourceString);
+    },
   });
 
   return semantics;
