@@ -4,6 +4,7 @@
   "description": "Learning project for coffee brewing language",
   "main": "src/main.mjs",
   "scripts": {
+    "build": "vite build",
     "develop": "vite",
     "test": "node --test"
   },
