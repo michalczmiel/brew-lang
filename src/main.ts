@@ -5,7 +5,7 @@ import { indentWithTab } from "@codemirror/commands";
 
 import { grammar } from "./grammar.js";
 import { glitchCoffeeOrigamiHot } from "./recipes.js";
-import { highlighting } from "./highlighting.js";
+import { highlighting, autocomplete } from "./highlighting.js";
 import { newSemantics } from "./semantics.js";
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -63,6 +63,9 @@ window.addEventListener("DOMContentLoaded", () => {
       basicSetup,
       keymap.of([indentWithTab]),
       highlighting,
+      highlighting.data.of({
+        autocomplete,
+      }),
       updateListener,
     ];
     if (useVim) {
