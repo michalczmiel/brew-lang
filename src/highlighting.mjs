@@ -2,6 +2,11 @@ import { StreamLanguage } from "@codemirror/language";
 
 export const highlighting = StreamLanguage.define({
   token(stream, state) {
+    // Comments
+    if (stream.match(/#.*/)) {
+      return "comment";
+    }
+
     // Keywords
     if (
       stream.match(

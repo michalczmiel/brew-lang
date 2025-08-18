@@ -1,4 +1,7 @@
 export const glitchCoffeeOrigamiHot = `
+# Glitch Coffee Origami Hot Recipe
+# Paper: Karita Wave
+
 temperature 86..90
 dose 14.5
 water 260

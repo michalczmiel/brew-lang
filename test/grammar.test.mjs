@@ -20,3 +20,31 @@ test("temperature without number", () => {
     `Line 1, col 12:\n> 1 | temperature\n                 ^\nExpected " "`,
   );
 });
+
+test("correctly parses single line comment", () => {
+  const match = grammar.match("# This is a comment");
+  assert.ok(match.succeeded(), match.message);
+});
+
+test("correctly parses comment with recipe elements", () => {
+  const recipe = `# Recipe for great coffee
+dose 20
+temperature 94
+# Add hot water
+water 300
+`;
+  const match = grammar.match(recipe);
+  assert.ok(match.succeeded(), match.message);
+});
+
+test("correctly parses comment inside step", () => {
+  const recipe = `step {
+  # Start the timer
+  start 0:00
+  pour 60
+  # Wait a bit
+  duration 0:30
+}`;
+  const match = grammar.match(recipe);
+  assert.ok(match.succeeded(), match.message);
+});
