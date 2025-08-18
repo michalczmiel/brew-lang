@@ -12,6 +12,7 @@
   "author": "Michał Czmiel",
   "license": "MIT",
   "dependencies": {
+    "@codemirror/commands": "^6.8.1",
     "@codemirror/language": "^6.11.3",
     "@codemirror/view": "^6.38.1",
     "@replit/codemirror-vim": "^6.3.0",

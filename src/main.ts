@@ -1,6 +1,7 @@
 import { basicSetup } from "codemirror";
-import { EditorView } from "@codemirror/view";
+import { EditorView, keymap } from "@codemirror/view";
 import { vim } from "@replit/codemirror-vim";
+import { indentWithTab } from "@codemirror/commands";
 
 import { grammar } from "./grammar.js";
 import { glitchCoffeeOrigamiHot } from "./recipes.js";
@@ -58,7 +59,12 @@ window.addEventListener("DOMContentLoaded", () => {
     useVim: boolean;
     doc: string;
   }): EditorView {
-    const extensions = [basicSetup, highlighting, updateListener];
+    const extensions = [
+      basicSetup,
+      keymap.of([indentWithTab]),
+      highlighting,
+      updateListener,
+    ];
     if (useVim) {
       extensions.unshift(vim());
     }
