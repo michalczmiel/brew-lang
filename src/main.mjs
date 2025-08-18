@@ -16,7 +16,7 @@ window.addEventListener("DOMContentLoaded", () => {
       const match = grammar.match(update.state.doc.toString());
 
       if (match.succeeded()) {
-        consoleContainer.textContent = "";
+        consoleContainer.textContent = "No errors";
       } else {
         consoleContainer.textContent = match.message;
       }

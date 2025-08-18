@@ -4,18 +4,67 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>brewlang</title>
+    <style>
+      .app-container {
+        display: flex;
+        height: 100vh;
+        gap: 10px;
+      }
+
+      .editor-section {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .error-sidebar {
+        width: 300px;
+        padding: 10px;
+        border-left: 1px solid #ccc;
+        background-color: #f9f9f9;
+      }
+
+      .error-sidebar h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 16px;
+      }
+
+      .error-sidebar pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+
+      @media (max-width: 768px) {
+        .app-container {
+          flex-direction: column;
+          height: auto;
+        }
+
+        .error-sidebar {
+          width: auto;
+          border-left: none;
+          border-top: 1px solid #ccc;
+        }
+      }
+    </style>
   </head>
 
   <body>
-    <main>
-      <div style="margin-bottom: 10px;">
-        <label>
-          <input type="checkbox" id="vim-toggle"> Enable Vim Mode
-        </label>
-      </div>
-      <div id="editor"></div>
-      <pre id="console"></pre>
-    </main>
+    <div class="app-container">
+      <main class="editor-section">
+        <div style="margin-bottom: 10px;">
+          <label>
+            <input type="checkbox" id="vim-toggle"> Enable Vim Mode
+          </label>
+        </div>
+        <div id="editor"></div>
+      </main>
+      <aside class="error-sidebar">
+        <h3>Errors</h3>
+        <pre id="console">No errors</pre>
+      </aside>
+    </div>
     <script type="module" src="/src/main.mjs"></script>
   </body>
 </html>
