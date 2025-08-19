@@ -7,7 +7,34 @@ test("water amount cannot be zero", () => {
   const semantics = newSemantics(grammar);
   const match = grammar.match("water 0");
 
-  const result = semantics(match).checkWater();
+  const result = semantics(match).validate();
 
   expect(result).toBe("Water amount cannot be zero");
+});
+
+test("dose amount cannot be zero", () => {
+  const semantics = newSemantics(grammar);
+  const match = grammar.match("dose 0");
+
+  const result = semantics(match).validate();
+
+  expect(result).toBe("Dose amount cannot be zero");
+});
+
+test("pour amount cannot be zero", () => {
+  const semantics = newSemantics(grammar);
+  const match = grammar.match("step\n  pour 0\nend");
+
+  const result = semantics(match).validate();
+
+  expect(result).toBe("Pour amount cannot be zero");
+});
+
+test("temperature amount cannot be zero", () => {
+  const semantics = newSemantics(grammar);
+  const match = grammar.match("temperature 0");
+
+  const result = semantics(match).validate();
+
+  expect(result).toBe("Temperature amount cannot be zero");
 });

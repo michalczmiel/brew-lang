@@ -57,7 +57,7 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const semanticError = semantics(match).checkWater();
+    const semanticError = semantics(match).validate();
     if (semanticError) {
       const head = editor.state.selection.main.head;
       const cursor = editor.state.doc.lineAt(head);
