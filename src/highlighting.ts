@@ -29,10 +29,7 @@ export const highlighting = StreamLanguage.define({
   },
 });
 
-function shouldPreventAutocomplete(context: CompletionContext): boolean {
-  const lineStart = context.state.doc.lineAt(context.pos).from;
-  const textBeforeCursor = context.state.sliceDoc(lineStart, context.pos);
-
+export function shouldPreventAutocomplete(textBeforeCursor: string): boolean {
   // no autocomplete in decimal number
   if (/\d+\.\d*$/.test(textBeforeCursor)) {
     return true;
@@ -40,6 +37,11 @@ function shouldPreventAutocomplete(context: CompletionContext): boolean {
 
   // no autocomplete after range operator
   if (/\d+\.\.$/.test(textBeforeCursor)) {
+    return true;
+  }
+
+  // no autocomplete after duration separator
+  if (/\d+:\d*$/.test(textBeforeCursor)) {
     return true;
   }
 
@@ -55,6 +57,13 @@ function shouldPreventAutocomplete(context: CompletionContext): boolean {
     return true;
   }
 
+  // no autocomplete after root level properties that already have values
+  const rootLevelWithValueRegex =
+    /\b(dose|water)\s+\d+(\.\d+)?(\s+\w*)?$|temperature\s+(\d+(\.\d+)?|\d+\.\.\d+)(\s+\w*)?$|method\s+\w+(\s+\w*)?$/;
+  if (rootLevelWithValueRegex.test(textBeforeCursor)) {
+    return true;
+  }
+
   return false;
 }
 
@@ -67,7 +76,10 @@ export function autocomplete(
     return null;
   }
 
-  if (shouldPreventAutocomplete(context)) {
+  const lineStart = context.state.doc.lineAt(context.pos).from;
+  const textBeforeCursor = context.state.sliceDoc(lineStart, context.pos);
+
+  if (shouldPreventAutocomplete(textBeforeCursor)) {
     return null;
   }
 
