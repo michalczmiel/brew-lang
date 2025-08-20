@@ -35,9 +35,8 @@ water 300
 });
 
 test("correctly parses comment inside step", () => {
-  const recipe = `step
+  const recipe = `at 0:00
   # Start the timer
-  start 0:00
   pour 60
   # Wait a bit
   duration 0:30
@@ -47,14 +46,13 @@ end`;
 });
 
 test("correctly parses inline step format", () => {
-  const recipe = `step start 0:00 finish 0:15 pour 60 end`;
+  const recipe = `at 0:00 pour 60 duration 0:15 end`;
   const match = grammar.match(recipe);
   expect(match.succeeded(), match.message).toBeTruthy();
 });
 
 test("correctly parses mixed inline and multiline step", () => {
-  const recipe = `step start 0:00 finish 0:15
-  pour 60
+  const recipe = `at 0:00 pour 60
   duration 0:30
 end`;
   const match = grammar.match(recipe);

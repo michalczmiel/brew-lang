@@ -43,7 +43,7 @@ export function newSemantics(grammar: Grammar): Semantics {
       }
       return null;
     },
-    step(keyword, newline1, instructions, end, newline2) {
+    step(keyword, space, duration, newline1, instructions, end, newline2) {
       return instructions.validate();
     },
     instruction(spaces, content, terminator) {

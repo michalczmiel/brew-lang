@@ -1,7 +1,7 @@
 import { StreamLanguage } from "@codemirror/language";
-import {
+import type {
   CompletionContext,
-  type CompletionResult,
+  CompletionResult,
 } from "@codemirror/autocomplete";
 
 export const highlighting = StreamLanguage.define({
@@ -13,9 +13,7 @@ export const highlighting = StreamLanguage.define({
 
     // Keywords
     if (
-      stream.match(
-        /\b(method|temperature|dose|water|start|finish|step|pour|duration|end)\b/,
-      )
+      stream.match(/\b(method|temperature|dose|water|at|pour|duration|end)\b/)
     ) {
       return "keyword";
     }
@@ -52,7 +50,7 @@ function shouldPreventAutocomplete(context: CompletionContext): boolean {
 
   // should not show keyword completions after Keywords that expeect value
   const expectsValueRegex =
-    /\b(method|temperature|dose|water|start|finish|pour|duration)\s+\w*$/;
+    /\b(method|temperature|dose|water|at|pour|duration)\s+\w*$/;
   if (expectsValueRegex.test(textBeforeCursor)) {
     return true;
   }
@@ -75,16 +73,6 @@ export function autocomplete(
 
   const options = isInStep(context)
     ? [
-        {
-          label: "start",
-          type: "keyword",
-          info: "Specify the step start time eg. start 0:00",
-        },
-        {
-          label: "finish",
-          type: "keyword",
-          info: "Specify the step finish time eg. finish 0:30",
-        },
         {
           label: "pour",
           type: "keyword",
@@ -123,9 +111,9 @@ export function autocomplete(
           info: "Set the amount of water eg. 300",
         },
         {
-          label: "step",
+          label: "at",
           type: "keyword",
-          info: "Define a step in the brewing process",
+          info: "Define a step at a specific time, eg. at 0:00",
         },
       ];
 
@@ -138,8 +126,8 @@ export function autocomplete(
 function isInStep(context: CompletionContext): boolean {
   const textBeforeCursor = context.state.sliceDoc(0, context.pos);
 
-  // count unclosed steps: +1 for "step", -1 for "end"
-  const stepMatches = textBeforeCursor.match(/\bstep\b/g) || [];
+  // count unclosed steps: +1 for "at", -1 for "end"
+  const stepMatches = textBeforeCursor.match(/\bat\b/g) || [];
   const endMatches = textBeforeCursor.match(/\bend\b/g) || [];
 
   return stepMatches.length > endMatches.length;

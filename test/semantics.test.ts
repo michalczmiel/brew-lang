@@ -23,7 +23,7 @@ test("dose amount cannot be zero", () => {
 
 test("pour amount cannot be zero", () => {
   const semantics = newSemantics(grammar);
-  const match = grammar.match("step\n  pour 0\nend");
+  const match = grammar.match("at 0:00\n  pour 0\nend");
 
   const result = semantics(match).validate();
 
