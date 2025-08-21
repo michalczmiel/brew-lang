@@ -38,3 +38,21 @@ test("temperature amount cannot be zero", () => {
 
   expect(result).toBe("Temperature amount cannot be zero");
 });
+
+test("temperature range cannot have lower bound greater than upper bound", () => {
+  const semantics = newSemantics(grammar);
+  const match = grammar.match("temperature 100..50");
+
+  const result = semantics(match).validate();
+
+  expect(result).toBe("Range cannot have lower bound greater than upper bound");
+});
+
+test("temperature range cannot have lower bound equal to upper bound", () => {
+  const semantics = newSemantics(grammar);
+  const match = grammar.match("temperature 100..100");
+
+  const result = semantics(match).validate();
+
+  expect(result).toBe("Range cannot have lower bound equal to upper bound");
+});

@@ -37,7 +37,12 @@ export function newSemantics(grammar: Grammar): Semantics {
       return null;
     },
     temperature(_keyword, _space, number, _newline) {
-      const temperatureAmount = number.validate();
+      const temperatureAmount: number | string = number.validate();
+
+      if (typeof temperatureAmount === "string") {
+        return temperatureAmount;
+      }
+
       if (temperatureAmount === 0) {
         return "Temperature amount cannot be zero";
       }
@@ -67,7 +72,18 @@ export function newSemantics(grammar: Grammar): Semantics {
       }
       return null;
     },
-    range(_start, _dot1, _dot2, _end) {
+    range(start, _dot1, _dot2, end) {
+      const startValue = start.validate();
+      const endValue = end.validate();
+
+      if (startValue > endValue) {
+        return "Range cannot have lower bound greater than upper bound";
+      }
+
+      if (startValue === endValue) {
+        return "Range cannot have lower bound equal to upper bound";
+      }
+
       return null;
     },
     duration_number(_minutes, _colon, _seconds) {

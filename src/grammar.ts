@@ -18,11 +18,12 @@ export const grammar = ohm.grammar(String.raw`
     comment = "#" (~newline any)*
     newline = "\n"
 
+    range = whole_number "." "." whole_number
+
     number = real_number | whole_number
     whole_number = digit+
     real_number = digit+ "." digit+
 
-    range = number "." "." number
     duration_number = whole_number ":" whole_number
   }
 `);
