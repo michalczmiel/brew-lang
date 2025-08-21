@@ -103,7 +103,13 @@ window.addEventListener("DOMContentLoaded", () => {
     return new EditorView({
       doc,
       parent,
-      extensions,
+      extensions: [
+        ...extensions,
+        EditorView.theme({
+          "&": { height: "100%" },
+          ".cm-scroller": { overflow: "auto" },
+        }),
+      ],
     });
   }
 
