@@ -7,7 +7,7 @@ import { oneDark } from "@codemirror/theme-one-dark";
 import { grammar } from "./grammar.js";
 import { glitchCoffeeOrigamiHot } from "./recipes.js";
 import { highlighting, autocomplete } from "./highlighting.js";
-import { newSemantics } from "./semantics.js";
+import { newSemantics, type SemanticError } from "./semantics.js";
 
 function updateDarkMode(isDark: boolean) {
   if (isDark) {
@@ -58,15 +58,18 @@ window.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const semanticError = semantics(match).validate();
-    if (semanticError) {
-      const head = editor.state.selection.main.head;
-      const cursor = editor.state.doc.lineAt(head);
+    const semanticErrors: SemanticError[] = semantics(match).validate();
+    if (semanticErrors.length > 0) {
+      const errorMessages = semanticErrors
+        .map((error) => {
+          const startPos = editor.state.doc.lineAt(error.start);
+          const line = startPos.number;
+          const col = error.start - startPos.from + 1;
+          return `Line ${line}, col ${col}: ${error.message}`;
+        })
+        .join("\n\n");
 
-      const line = cursor.number;
-      const col = head - cursor.from;
-
-      consoleContainer.textContent = `Line ${line}, col ${col}:\n${semanticError}`;
+      consoleContainer.textContent = errorMessages;
       return;
     }
 

@@ -1,5 +1,11 @@
 import type { Grammar, Semantics } from "ohm-js";
 
+export interface SemanticError {
+  message: string;
+  start: number;
+  end: number;
+}
+
 export function newSemantics(grammar: Grammar): Semantics {
   const semantics = grammar.createSemantics();
 
@@ -7,46 +13,57 @@ export function newSemantics(grammar: Grammar): Semantics {
     _iter(...children) {
       const results = children
         .map((c) => c.validate())
-        .filter((result) => result !== null);
-      return results.length > 0 ? results[0] : null;
+        .filter((result) => result !== null && result.length > 0);
+      return results.flat();
     },
     number(x) {
-      return parseFloat(x.sourceString);
+      const value = parseFloat(x.sourceString);
+      if (value === 0) {
+        return [
+          {
+            message: "Amount cannot be zero",
+            start: this.source.startIdx,
+            end: this.source.endIdx,
+          },
+        ];
+      }
+      return value;
     },
     newline(_) {
-      return null;
+      return [];
     },
     water(_keyword, _space, number, _newline) {
-      const waterAmount = number.validate();
-      if (waterAmount === 0) {
-        return "Water amount cannot be zero";
+      const result = number.validate();
+      if (Array.isArray(result)) {
+        return result.map((error) => ({
+          ...error,
+          message: error.message.replace("Amount", "Water amount"),
+        }));
       }
-      return null;
+      return [];
     },
     comment(_hash, _content) {
-      return null;
+      return [];
     },
     method(_keyword, _space, _content, _newline) {
-      return null;
+      return [];
     },
     dose(_keyword, _space, number, _newline) {
-      const doseAmount = number.validate();
-      if (doseAmount === 0) {
-        return "Dose amount cannot be zero";
+      const result = number.validate();
+      if (Array.isArray(result)) {
+        return result.map((error) => ({
+          ...error,
+          message: error.message.replace("Amount", "Dose amount"),
+        }));
       }
-      return null;
+      return [];
     },
-    temperature(_keyword, _space, number, _newline) {
-      const temperatureAmount: number | string = number.validate();
-
-      if (typeof temperatureAmount === "string") {
-        return temperatureAmount;
-      }
-
-      if (temperatureAmount === 0) {
-        return "Temperature amount cannot be zero";
-      }
-      return null;
+    temperature(_keyword, _space, rangeOrNumbers, _newline) {
+      const result = rangeOrNumbers.validate();
+      return result.map((error: SemanticError) => ({
+        ...error,
+        message: error.message.replace("Amount", "Temperature amount"),
+      }));
     },
     step(
       _keyword,
@@ -63,31 +80,52 @@ export function newSemantics(grammar: Grammar): Semantics {
       return content.validate();
     },
     time_instruction(_keyword, _space, _duration) {
-      return null;
+      return [];
     },
     pour(_keyword, _space, number) {
-      const pourAmount = number.validate();
-      if (pourAmount === 0) {
-        return "Pour amount cannot be zero";
+      const result = number.validate();
+      if (Array.isArray(result)) {
+        return result.map((error) => ({
+          ...error,
+          message: error.message.replace("Amount", "Pour amount"),
+        }));
       }
-      return null;
+      return [];
     },
     range(start, _dot1, _dot2, end) {
-      const startValue = start.validate();
-      const endValue = end.validate();
+      const startResult = start.validate();
+      const endResult = end.validate();
+      const errors: SemanticError[] = [];
 
-      if (startValue > endValue) {
-        return "Range cannot have lower bound greater than upper bound";
+      if (Array.isArray(startResult)) {
+        errors.push(...startResult);
+      }
+      if (Array.isArray(endResult)) {
+        errors.push(...endResult);
       }
 
-      if (startValue === endValue) {
-        return "Range cannot have lower bound equal to upper bound";
+      if (!Array.isArray(startResult) && !Array.isArray(endResult)) {
+        if (startResult > endResult) {
+          errors.push({
+            message: "Range cannot have lower bound greater than upper bound",
+            start: this.source.startIdx,
+            end: this.source.endIdx,
+          });
+        }
+
+        if (startResult === endResult) {
+          errors.push({
+            message: "Range cannot have lower bound equal to upper bound",
+            start: this.source.startIdx,
+            end: this.source.endIdx,
+          });
+        }
       }
 
-      return null;
+      return errors;
     },
     duration_number(_minutes, _colon, _seconds) {
-      return null;
+      return [];
     },
     whole_number(_digits) {
       return parseFloat(this.sourceString);
