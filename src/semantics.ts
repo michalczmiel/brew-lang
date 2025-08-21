@@ -16,59 +16,67 @@ export function newSemantics(grammar: Grammar): Semantics {
     newline(_) {
       return null;
     },
-    water(keyword, space, number, newline) {
+    water(_keyword, _space, number, _newline) {
       const waterAmount = number.validate();
       if (waterAmount === 0) {
         return "Water amount cannot be zero";
       }
       return null;
     },
-    comment(hash, content) {
+    comment(_hash, _content) {
       return null;
     },
-    method(keyword, space, content, newline) {
+    method(_keyword, _space, _content, _newline) {
       return null;
     },
-    dose(keyword, space, number, newline) {
+    dose(_keyword, _space, number, _newline) {
       const doseAmount = number.validate();
       if (doseAmount === 0) {
         return "Dose amount cannot be zero";
       }
       return null;
     },
-    temperature(keyword, space, number, newline) {
+    temperature(_keyword, _space, number, _newline) {
       const temperatureAmount = number.validate();
       if (temperatureAmount === 0) {
         return "Temperature amount cannot be zero";
       }
       return null;
     },
-    step(keyword, space, duration, newline1, instructions, end, newline2) {
+    step(
+      _keyword,
+      _space,
+      _duration,
+      _newline1,
+      instructions,
+      _end,
+      _newline2,
+    ) {
       return instructions.validate();
     },
-    instruction(spaces, content, terminator) {
+    instruction(_spaces, content, _terminator) {
       return content.validate();
     },
-    time_instruction(keyword, space, duration) {
+    time_instruction(_keyword, _space, _duration) {
       return null;
     },
-    pour(keyword, space, number) {
+    pour(_keyword, _space, number) {
       const pourAmount = number.validate();
       if (pourAmount === 0) {
         return "Pour amount cannot be zero";
       }
       return null;
     },
-    range(start, dot1, dot2, end) {
+    range(_start, _dot1, _dot2, _end) {
       return null;
     },
-    duration_number(minutes, colon, seconds) {
+    duration_number(_minutes, _colon, _seconds) {
       return null;
     },
-    whole_number(digits) {
+    whole_number(_digits) {
       return parseFloat(this.sourceString);
     },
-    real_number(whole, dot, decimal) {
+    real_number(_whole, _dot, _decimal) {
       return parseFloat(this.sourceString);
     },
   });

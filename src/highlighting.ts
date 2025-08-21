@@ -5,7 +5,7 @@ import type {
 } from "@codemirror/autocomplete";
 
 export const highlighting = StreamLanguage.define({
-  token(stream, state) {
+  token(stream) {
     // Comments
     if (stream.match(/#.*/)) {
       return "comment";

@@ -6,7 +6,9 @@
   "scripts": {
     "build": "bun build ./index.html --outdir ./dist --minify",
     "dev": "bun ./index.html --console",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "lint": "biome lint ./src ./test",
+    "format": "biome format ./src ./test --write"
   },
   "author": "Michał Czmiel",
   "license": "MIT",
@@ -21,6 +23,7 @@
     "ohm-js": "^17.2.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.2.0",
     "@types/bun": "^1.2.20",
     "typescript": "^5.9.2"
   },

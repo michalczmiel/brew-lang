@@ -80,10 +80,12 @@ window.addEventListener("DOMContentLoaded", () => {
     useVim,
     useDark,
     doc,
+    parent,
   }: {
     useVim: boolean;
     useDark: boolean;
     doc: string;
+    parent: Element;
   }): EditorView {
     const extensions = [
       basicSetup,
@@ -103,7 +105,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     return new EditorView({
       doc,
-      parent: editorContainer!,
+      parent,
       extensions,
     });
   }
@@ -112,6 +114,7 @@ window.addEventListener("DOMContentLoaded", () => {
     useVim: vimModeEnabled,
     useDark: darkModeEnabled,
     doc: glitchCoffeeOrigamiHot,
+    parent: editorContainer,
   });
   editor.focus();
 
@@ -131,6 +134,7 @@ window.addEventListener("DOMContentLoaded", () => {
       useVim: (event.target as HTMLInputElement).checked,
       useDark: darkToggle.checked,
       doc: currentDoc,
+      parent: editorContainer,
     });
     editor.dispatch({
       changes: { from: 0, to: editor.state.doc.length, insert: currentDoc },
@@ -153,6 +157,7 @@ window.addEventListener("DOMContentLoaded", () => {
       useVim: vimToggle.checked,
       useDark: isDark,
       doc: currentDoc,
+      parent: editorContainer,
     });
     editor.dispatch({
       changes: { from: 0, to: editor.state.doc.length, insert: currentDoc },
