@@ -9,6 +9,14 @@ import { glitchCoffeeOrigamiHot } from "./recipes.js";
 import { highlighting, autocomplete } from "./highlighting.js";
 import { newSemantics } from "./semantics.js";
 
+function updateDarkMode(isDark: boolean) {
+  if (isDark) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   const editorContainer = document.getElementById("editor");
   const consoleContainer = document.getElementById("console");
@@ -23,7 +31,6 @@ window.addEventListener("DOMContentLoaded", () => {
   const vimModeEnabled = localStorage.getItem("vim-mode") === "true";
   vimToggle.checked = vimModeEnabled;
 
-  // Detect system dark mode preference
   const systemPrefersDark = window.matchMedia(
     "(prefers-color-scheme: dark)",
   ).matches;
@@ -33,16 +40,6 @@ window.addEventListener("DOMContentLoaded", () => {
     : systemPrefersDark;
   darkToggle.checked = darkModeEnabled;
 
-  // Function to update body dark class
-  function updateDarkMode(isDark: boolean) {
-    if (isDark) {
-      document.body.classList.add("dark");
-    } else {
-      document.body.classList.remove("dark");
-    }
-  }
-
-  // Set initial dark mode
   updateDarkMode(darkModeEnabled);
 
   const semantics = newSemantics(grammar);
