@@ -8,9 +8,9 @@ This is a learning project for a domain-specific language (DSL) for coffee brewi
 
 ## Development Commands
 
-- **Run tests**: `pnpm test` (uses Vitest run tests in `test/` directory)
-- **Build project**: `pnpm build` (uses Vite for bundling)
-- **Type check**: `pnpm check` (uses TypeScript for type checking)
+- **Run tests**: `bun test` (uses Bun test runner to run tests in `test/` directory)
+- **Build project**: `bun run build` (uses Bun bundler for bundling)
+- **Type check**: `bun run check` (uses TypeScript for type checking)
 
 ## Architecture
 

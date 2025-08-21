@@ -24,9 +24,13 @@ window.addEventListener("DOMContentLoaded", () => {
   vimToggle.checked = vimModeEnabled;
 
   // Detect system dark mode preference
-  const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const systemPrefersDark = window.matchMedia(
+    "(prefers-color-scheme: dark)",
+  ).matches;
   const storedDarkMode = localStorage.getItem("dark-mode");
-  const darkModeEnabled = storedDarkMode ? storedDarkMode === "true" : systemPrefersDark;
+  const darkModeEnabled = storedDarkMode
+    ? storedDarkMode === "true"
+    : systemPrefersDark;
   darkToggle.checked = darkModeEnabled;
 
   // Function to update body dark class
@@ -144,7 +148,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     localStorage.setItem("dark-mode", isDark.toString());
     updateDarkMode(isDark);
-    
+
     editor = createEditor({
       useVim: vimToggle.checked,
       useDark: isDark,
