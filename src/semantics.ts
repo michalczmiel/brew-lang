@@ -2,8 +2,7 @@ import type { Grammar, Semantics } from "ohm-js";
 
 export interface SemanticError {
   message: string;
-  start: number;
-  end: number;
+  formatted: string;
 }
 
 export function newSemantics(grammar: Grammar): Semantics {
@@ -22,8 +21,7 @@ export function newSemantics(grammar: Grammar): Semantics {
         return [
           {
             message: "Amount cannot be zero",
-            start: this.source.startIdx,
-            end: this.source.endIdx,
+            formatted: this.source.getLineAndColumnMessage(),
           },
         ];
       }
@@ -108,16 +106,14 @@ export function newSemantics(grammar: Grammar): Semantics {
         if (startResult > endResult) {
           errors.push({
             message: "Range cannot have lower bound greater than upper bound",
-            start: this.source.startIdx,
-            end: this.source.endIdx,
+            formatted: this.source.getLineAndColumnMessage(),
           });
         }
 
         if (startResult === endResult) {
           errors.push({
             message: "Range cannot have lower bound equal to upper bound",
-            start: this.source.startIdx,
-            end: this.source.endIdx,
+            formatted: this.source.getLineAndColumnMessage(),
           });
         }
       }

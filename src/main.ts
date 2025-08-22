@@ -61,12 +61,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const semanticErrors: SemanticError[] = semantics(match).validate();
     if (semanticErrors.length > 0) {
       const errorMessages = semanticErrors
-        .map((error) => {
-          const startPos = editor.state.doc.lineAt(error.start);
-          const line = startPos.number;
-          const col = error.start - startPos.from + 1;
-          return `Line ${line}, col ${col}: ${error.message}`;
-        })
+        .map((error) => `${error.formatted}${error.message}`)
         .join("\n\n");
 
       consoleContainer.textContent = errorMessages;
