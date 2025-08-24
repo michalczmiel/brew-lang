@@ -163,5 +163,94 @@ export function newSemantics(grammar: Grammar): Semantics {
     },
   });
 
+  semantics.addOperation("calculateRatio", {
+    recipe(lines) {
+      let dose: number | null = null;
+      let water: number | null = null;
+
+      for (const line of lines.children) {
+        if (line.ctorName !== "line") {
+          continue;
+        }
+
+        const keyword = line.children[0];
+        if (keyword?.ctorName === "dose" && keyword.children[2]) {
+          dose = keyword.children[2].calculateRatio();
+        } else if (keyword?.ctorName === "water" && keyword.children[2]) {
+          water = keyword.children[2].calculateRatio();
+        }
+      }
+
+      if (!dose || !water || dose === 0) {
+        return null;
+      }
+
+      const ratio = water / dose;
+      return `1:${ratio.toFixed(1)}`;
+    },
+    _iter(...children) {
+      return (
+        children.map((c) => c.calculateRatio()).find((r) => r !== null) || null
+      );
+    },
+    number(x) {
+      return parseFloat(x.sourceString);
+    },
+    line(keyword, _space, _comment, _newline) {
+      return keyword.calculateRatio();
+    },
+    newline(_) {
+      return null;
+    },
+    water(_keyword, _space, number) {
+      return number.calculateRatio();
+    },
+    comment(_hash, _content) {
+      return null;
+    },
+    brewer(_keyword, _space, _content) {
+      return null;
+    },
+    dose(_keyword, _space, number) {
+      return number.calculateRatio();
+    },
+    temperature(_keyword, _space, _rangeOrNumbers) {
+      return null;
+    },
+    step(
+      _keyword,
+      _space,
+      _duration,
+      _spaces,
+      _comment,
+      _newline,
+      _instructions,
+      _end,
+    ) {
+      return null;
+    },
+    instruction(_spaces, _content, _terminator) {
+      return null;
+    },
+    duration(_keyword, _space, _duration) {
+      return null;
+    },
+    pour(_keyword, _space, _number) {
+      return null;
+    },
+    range(_start, _dot1, _dot2, _end) {
+      return null;
+    },
+    duration_number(_minutes, _colon, _seconds) {
+      return null;
+    },
+    whole_number(_digits) {
+      return parseFloat(this.sourceString);
+    },
+    real_number(_whole, _dot, _decimal) {
+      return parseFloat(this.sourceString);
+    },
+  });
+
   return semantics;
 }

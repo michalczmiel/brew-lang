@@ -83,3 +83,19 @@ test.each([
   expect(result).toHaveLength(1);
   expect(result[0]?.message).toBe(message);
 });
+
+test.each([
+  ["dose 15\nwater 200", "1:13.3"],
+  ["water 200\ndose 15", "1:13.3"],
+  ["dose 16.5\nwater 330", "1:20.0"],
+  ["dose 16.5", null],
+  ["water 260", null],
+  ["", null],
+])("calculate coffee ratio", (recipe, expectedRatio) => {
+  const semantics = newSemantics(grammar);
+  const match = grammar.match(recipe);
+
+  const ratio = semantics(match).calculateRatio();
+
+  expect(ratio).toEqual(expectedRatio);
+});

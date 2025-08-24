@@ -11,7 +11,7 @@ This is a Domain Specific Language (DSL) for crafting coffee brew recipes, focus
 **Development:**
 
 - `bun dev` - Start development server with live reload (exposed to local network)
-- `bun build` - Build minified production bundle to ./dist
+- `bun run build` - Build minified production bundle to ./dist
 - `bun check` - Type check without emitting files
 - `bun test` - Run all tests
 - `bun lint` - Lint source and test files with Biome
