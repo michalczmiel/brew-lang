@@ -9,6 +9,34 @@ export function newSemantics(grammar: Grammar): Semantics {
   const semantics = grammar.createSemantics();
 
   semantics.addOperation("validate", {
+    recipe(lines) {
+      const errors = lines.validate().flat();
+
+      function checkDuplicates(type: string, message: string) {
+        const typeLines = lines.children.filter(
+          (child) =>
+            child.ctorName === "line" && child.children[0]?.ctorName === type,
+        );
+
+        if (typeLines.length > 1) {
+          typeLines.slice(1).forEach((duplicateLine) => {
+            errors.push({
+              message,
+              formatted: duplicateLine.source.getLineAndColumnMessage(),
+            });
+          });
+        }
+      }
+
+      checkDuplicates("dose", "Recipe cannot have multiple dose definitions");
+      checkDuplicates("water", "Recipe cannot have multiple water definitions");
+      checkDuplicates(
+        "method",
+        "Recipe cannot have multiple method definitions",
+      );
+
+      return errors;
+    },
     _iter(...children) {
       const results = children
         .map((c) => c.validate())

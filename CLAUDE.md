@@ -50,6 +50,7 @@ The DSL supports brewing instructions with constructs like `method`, `dose`, `te
 
 - Always prefer less code, avoid unnecessary complexity, and keep it simple
 - All TypeScript functions must have type annotations for parameters and return values
+- Avoid using 'any' type, prefer specific types or interfaces
 - Avoid deep nesting and prefer defensive programming style by using early return
 - Avoid comments, use them only for explaining complex logic or non-obvious decisions
 - Use declarative and simple test cases for unit testing that tests the logic not the implementation details

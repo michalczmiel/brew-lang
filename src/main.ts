@@ -9,6 +9,33 @@ import { glitchCoffeeOrigamiHot, jamesHoffmannAeropress } from "./recipes.js";
 import { highlighting, autocomplete } from "./highlighting.js";
 import { newSemantics, type SemanticError } from "./semantics.js";
 
+function encodeContentToURL(content: string): string {
+  return encodeURIComponent(content);
+}
+
+function decodeContentFromURL(encodedContent: string): string {
+  try {
+    return decodeURIComponent(encodedContent);
+  } catch (error) {
+    console.error("Failed to decode URL content:", error);
+    return "";
+  }
+}
+
+function getSharedContentFromURL(): string | null {
+  const hash = window.location.hash;
+  if (hash.startsWith("#src=")) {
+    return decodeContentFromURL(hash.substring(5)); // Remove "#src=" prefix
+  }
+  return null;
+}
+
+function updateURLWithContent(content: string): void {
+  const encodedContent = encodeContentToURL(content);
+  const newURL = `${window.location.pathname}${window.location.search}#src=${encodedContent}`;
+  window.history.replaceState(null, "", newURL);
+}
+
 function updateDarkMode(isDark: boolean) {
   if (isDark) {
     document.documentElement.classList.add("dark");
@@ -25,13 +52,17 @@ window.addEventListener("DOMContentLoaded", () => {
   const recipeSelect = document.getElementById(
     "recipe-select",
   ) as HTMLSelectElement;
+  const shareButton = document.getElementById(
+    "share-button",
+  ) as HTMLButtonElement;
 
   if (
     !editorContainer ||
     !consoleContainer ||
     !vimToggle ||
     !darkToggle ||
-    !recipeSelect
+    !recipeSelect ||
+    !shareButton
   ) {
     console.error("Required elements not found in the DOM.");
     return;
@@ -54,6 +85,9 @@ window.addEventListener("DOMContentLoaded", () => {
   const semantics = newSemantics(grammar);
 
   let editor: EditorView;
+
+  const sharedContent = getSharedContentFromURL();
+  const initialContent = sharedContent || glitchCoffeeOrigamiHot;
 
   const updateListener = EditorView.updateListener.of((update) => {
     if (!update.docChanged) {
@@ -123,7 +157,7 @@ window.addEventListener("DOMContentLoaded", () => {
   editor = createEditor({
     useVim: vimModeEnabled,
     useDark: darkModeEnabled,
-    doc: glitchCoffeeOrigamiHot,
+    doc: initialContent,
     parent: editorContainer,
   });
   editor.focus();
@@ -197,5 +231,10 @@ window.addEventListener("DOMContentLoaded", () => {
         },
       });
     }
+  });
+
+  shareButton.addEventListener("click", () => {
+    const currentContent = editor.state.doc.toString();
+    updateURLWithContent(currentContent);
   });
 });

@@ -66,3 +66,20 @@ test("temperature range cannot have lower bound equal to upper bound", () => {
     "Range cannot have lower bound equal to upper bound",
   );
 });
+
+test.each([
+  ["dose 15\dose 20", "Recipe cannot have multiple dose definitions"],
+  ["water 200\nwater 250", "Recipe cannot have multiple water definitions"],
+  [
+    "method origami\nmethod origami dripper",
+    "Recipe cannot have multiple method definitions",
+  ],
+])("recipe cannot have multiple dose definitions", (recipe, message) => {
+  const semantics = newSemantics(grammar);
+  const match = grammar.match(recipe);
+
+  const result: SemanticError[] = semantics(match).validate();
+
+  expect(result).toHaveLength(1);
+  expect(result[0]?.message).toBe(message);
+});
