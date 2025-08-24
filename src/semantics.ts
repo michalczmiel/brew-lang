@@ -27,10 +27,13 @@ export function newSemantics(grammar: Grammar): Semantics {
       }
       return value;
     },
+    line(keyword, _space, _comment, _newline) {
+      return keyword.validate();
+    },
     newline(_) {
       return [];
     },
-    water(_keyword, _space, number, _newline) {
+    water(_keyword, _space, number) {
       const result = number.validate();
       if (Array.isArray(result)) {
         return result.map((error) => ({
@@ -43,10 +46,10 @@ export function newSemantics(grammar: Grammar): Semantics {
     comment(_hash, _content) {
       return [];
     },
-    method(_keyword, _space, _content, _newline) {
+    method(_keyword, _space, _content) {
       return [];
     },
-    dose(_keyword, _space, number, _newline) {
+    dose(_keyword, _space, number) {
       const result = number.validate();
       if (Array.isArray(result)) {
         return result.map((error) => ({
@@ -56,28 +59,20 @@ export function newSemantics(grammar: Grammar): Semantics {
       }
       return [];
     },
-    temperature(_keyword, _space, rangeOrNumbers, _newline) {
+    temperature(_keyword, _space, rangeOrNumbers) {
       const result = rangeOrNumbers.validate();
       return result.map((error: SemanticError) => ({
         ...error,
         message: error.message.replace("Amount", "Temperature amount"),
       }));
     },
-    step(
-      _keyword,
-      _space,
-      _duration,
-      _newline1,
-      instructions,
-      _end,
-      _newline2,
-    ) {
+    step(_keyword, _space, _duration, _spaces, _comment, _newline, instructions, _end) {
       return instructions.validate();
     },
     instruction(_spaces, content, _terminator) {
       return content.validate();
     },
-    time_instruction(_keyword, _space, _duration) {
+    duration(_keyword, _space, _duration) {
       return [];
     },
     pour(_keyword, _space, number) {

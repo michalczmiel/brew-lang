@@ -66,3 +66,11 @@ test.each(["v60", "origami", "french press", "chemex"])(
     expect(match.succeeded(), match.message).toBeTruthy();
   },
 );
+
+test.each([
+  "temperature 90..100 # depends on roast level",
+  "at 0:00 # Start the timer\nend",
+])("allows for inline comment", (statement) => {
+  const match = grammar.match(statement);
+  expect(match.succeeded(), match.message).toBeTruthy();
+});
