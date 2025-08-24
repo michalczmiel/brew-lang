@@ -4,28 +4,52 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a learning project for a domain-specific language (DSL) for coffee brewing recipes called "BrewLang". It's a web-based editor with real-time syntax validation and highlighting.
+This is a Domain Specific Language (DSL) for crafting coffee brew recipes, focused on alternative brewing methods. It's a learning project exploring DSL design and implementation including parsing, linting, evaluation, and error handling, with a simple editor environment featuring syntax highlighting and code completion.
 
-## Development Commands
+## Commands
 
-- **Run tests**: `bun test` (uses Bun test runner to run tests in `test/` directory)
-- **Build project**: `bun run build` (uses Bun bundler for bundling)
-- **Type check**: `bun run check` (uses TypeScript for type checking)
-- **Lint**: `bun run lint` (uses Biome for linting)
-- **Format**: `bun run format` (uses Biome for formatting)
+**Development:**
+
+- `bun dev` - Start development server with live reload (exposed to local network)
+- `bun build` - Build minified production bundle to ./dist
+- `bun check` - Type check without emitting files
+- `bun test` - Run all tests
+- `bun lint` - Lint source and test files with Biome
+- `bun format` - Format source and test files with Biome
 
 ## Architecture
 
-The project consists of these key files:
+**Core Components:**
 
-1. **HTML Interface** (`index.html`): Main application interface featuring a responsive two-panel layout with editor section and error sidebar. Includes CSS custom properties for light/dark themes, controls for vim mode and dark mode toggles, and mobile-responsive design. Loads the TypeScript module and provides the DOM structure for the BrewLang editor.
+- `src/grammar.ts` - Ohm.js grammar definition for the brew language DSL
+- `src/semantics.ts` - Semantic analysis and validation logic
+- `src/highlighting.ts` - CodeMirror syntax highlighting and autocomplete
+- `src/main.ts` - Main editor application with CodeMirror integration
+- `src/recipes.ts` - Sample brew recipes in the DSL
 
-2. **Grammar Definition** (`src/grammar.ts`): Uses Ohm.js to define the BrewLang syntax with rules for recipes, methods, steps, temperatures, doses, water amounts, timing instructions, and comments. Supports ranges (e.g., `86..90`), duration notation (`0:30`), and nested step instructions.
+**Language Structure:**
+The DSL supports brewing instructions with constructs like `method`, `dose`, `temperature`, `water`, and timed steps with `at X:XX ... end` blocks containing `pour` and `duration` instructions. Comments use `#` syntax.
 
-3. **Syntax Highlighting** (`src/highlighting.ts`): CodeMirror stream language definition that highlights keywords (method, temperature, dose, water, start, finish, step, pour, duration, end) and numbers. Also includes autocomplete functionality with helpful descriptions for each keyword.
+**Editor Features:**
 
-4. **Semantics** (`src/semantics.ts`): Semantic analysis and validation for BrewLang recipes. Currently implements water amount validation (prevents zero water amounts) with extensible architecture for additional semantic checks.
+- CodeMirror 6 editor with basic setup
+- Vim mode toggle (stored in localStorage)
+- Dark/light theme toggle
+- Real-time syntax validation and semantic error reporting
+- Sample recipe selection
 
-5. **Editor Interface** (`src/main.ts`): Sets up a CodeMirror editor with vim mode toggle, tab indentation, real-time grammar validation, and semantic error checking. Shows parse errors and semantic errors in a console div below the editor. Persists vim mode preference in localStorage.
+**Technology Stack:**
 
-6. **Sample Recipes** (`src/recipes.ts`): Contains example brewing recipes written in BrewLang syntax, including the "Glitch Coffee Origami Hot" recipe demonstrating method, temperature ranges, dose, water amounts, and multi-step brewing process.
+- Runtime: Bun
+- Parser: Ohm.js for grammar definition and parsing
+- Editor: CodeMirror 6 with custom language support
+- Linter/Formatter: Biome
+- TypeScript with strict configuration
+
+## Rules
+
+- Always prefer less code, avoid unnecessary complexity, and keep it simple
+- All TypeScript functions must have type annotations for parameters and return values
+- Avoid deep nesting and prefer defensive programming style by using early return
+- Avoid comments, use them only for explaining complex logic or non-obvious decisions
+- Use declarative and simple test cases for unit testing that tests the logic not the implementation details
