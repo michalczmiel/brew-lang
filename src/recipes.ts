@@ -24,3 +24,26 @@ at 1:20
   duration 0:15
 end
 `;
+
+export const jamesHoffmannAeropress = `
+# James Hoffmann Ultimate AeroPress
+
+temperature 85..99
+water 200
+dose 11
+
+# don't rinse paper
+
+at 0:00
+  pour 200
+  # then place the plunger on top
+end
+
+at 2:00
+  # gently swirl
+end
+
+at 2:30
+  # press
+end
+`;
