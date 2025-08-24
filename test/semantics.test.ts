@@ -1,6 +1,6 @@
 import { test, expect } from "bun:test";
 
-import { grammar } from "../src/grammar.js";
+import grammar from "../src/grammar.ohm-bundle.js";
 import { newSemantics, type SemanticError } from "../src/semantics.js";
 
 test.each([

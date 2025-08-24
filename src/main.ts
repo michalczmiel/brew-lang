@@ -3,7 +3,7 @@ import { EditorView, keymap, type Panel, showPanel } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
 import { oneDark } from "@codemirror/theme-one-dark";
 
-import { grammar } from "./grammar.js";
+import grammar from "./grammar.ohm-bundle.js";
 import { recipes } from "./recipes.js";
 import { highlighting, autocomplete } from "./highlighting.js";
 import { newSemantics, type SemanticError } from "./semantics.js";

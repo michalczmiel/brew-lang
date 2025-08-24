@@ -12,6 +12,7 @@ This is a Domain Specific Language (DSL) for crafting coffee brew recipes, focus
 
 - `bun dev` - Start development server with live reload (exposed to local network)
 - `bun run build` - Build minified production bundle to ./dist with Vite
+- `bun generate` - Generate Ohm.js bundles
 - `bun check` - Type check without emitting files
 - `bun test` - Run all tests
 - `bun lint` - Lint source and test files with Biome
@@ -23,11 +24,12 @@ It's imporant that you don't run dev server unless asked. After making changes e
 
 **Core Components:**
 
-- `src/grammar.ts` - Ohm.js grammar definition for the brew language DSL
+- `src/grammar.ohm` - Ohm.js grammar definition for the brew language DSL
 - `src/semantics.ts` - Semantic analysis and validation logic
 - `src/highlighting.ts` - CodeMirror syntax highlighting and autocomplete
 - `src/main.ts` - Main editor application with CodeMirror integration
 - `src/recipes.ts` - Sample brew recipes in the DSL
+- `src/share.ts` - Share recipe via URL
 
 **Language Structure:**
 The DSL supports brewing instructions with constructs like `brewer`, `dose`, `temperature` and timed steps with `at X:XX ... end` blocks containing `pour` and `duration` instructions. Comments use `#` syntax.

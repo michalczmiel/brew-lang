@@ -2,13 +2,14 @@
   "name": "brew-lang",
   "version": "1.0.0",
   "description": "Learning project for coffee brewing language",
-  "main": "src/main.mjs",
+  "main": "src/main.ts",
   "scripts": {
     "build": "vite build",
     "dev": "vite",
     "check": "tsc --noEmit",
     "lint": "biome lint ./src ./test",
-    "format": "biome format ./src ./test --write"
+    "format": "biome format ./src ./test --write",
+    "generate": "ohm generateBundles ./src/grammar.ohm --esm"
   },
   "author": "Michał Czmiel",
   "license": "MIT",
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
+    "@ohm-js/cli": "^2.0.1",
     "@types/bun": "^1.2.20",
     "typescript": "^5.9.2",
     "vite": "^7.1.3"

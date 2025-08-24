@@ -27,6 +27,7 @@
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
 
+    "allowJs": true,
     "strict": true,
     "jsx": "react-jsx",
     "isolatedModules": true,
