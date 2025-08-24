@@ -5,7 +5,7 @@ import { indentWithTab } from "@codemirror/commands";
 import { oneDark } from "@codemirror/theme-one-dark";
 
 import { grammar } from "./grammar.js";
-import { glitchCoffeeOrigamiHot, jamesHoffmannAeropress } from "./recipes.js";
+import { recipes } from "./recipes.js";
 import { highlighting, autocomplete } from "./highlighting.js";
 import { newSemantics, type SemanticError } from "./semantics.js";
 
@@ -83,7 +83,7 @@ window.addEventListener("DOMContentLoaded", () => {
   let editor: EditorView;
 
   const sharedContent = getSharedContentFromURL();
-  const initialContent = sharedContent || glitchCoffeeOrigamiHot;
+  const initialContent = sharedContent || recipes.glitchCoffeeOrigamiHot;
 
   const updateListener = EditorView.updateListener.of((update) => {
     if (!update.docChanged) {
@@ -208,15 +208,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const selectedValue = (event.target as HTMLSelectElement).value;
     if (!selectedValue) return;
 
-    let recipeContent = "";
-    switch (selectedValue) {
-      case "glitchCoffeeOrigamiHot":
-        recipeContent = glitchCoffeeOrigamiHot;
-        break;
-      case "jamesHoffmannAeropress":
-        recipeContent = jamesHoffmannAeropress;
-        break;
-    }
+    let recipeContent = recipes[selectedValue as keyof typeof recipes];
 
     if (recipeContent) {
       editor.dispatch({

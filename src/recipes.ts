@@ -1,4 +1,4 @@
-export const glitchCoffeeOrigamiHot = `
+const glitchCoffeeOrigamiHot = `
 # Glitch Coffee Origami Hot Recipe
 # Paper: Karita Wave
 
@@ -25,7 +25,7 @@ at 1:20
 end
 `;
 
-export const jamesHoffmannAeropress = `
+const jamesHoffmannAeropress = `
 # James Hoffmann Ultimate AeroPress
 
 temperature 85..99
@@ -47,3 +47,40 @@ at 2:30
   # press
 end
 `;
+
+const tetsuKasuyaHybridMethod = `
+
+# Tetsu Kasuya Hybrid method
+
+dose 20
+water 260
+method hario switch
+
+at 0:00
+  temperature 90
+  # open switch
+  pour 60
+end
+
+at 0:30
+  temperature 90
+  pour 60
+end
+
+at 1:15
+  temperature 70
+  # close switch
+  pour 160
+end
+
+at 1:45
+  # open switch
+end
+
+`;
+
+export const recipes = {
+  glitchCoffeeOrigamiHot,
+  jamesHoffmannAeropress,
+  tetsuKasuyaHybridMethod,
+} as const;
