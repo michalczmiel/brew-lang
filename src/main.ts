@@ -8,29 +8,7 @@ import { grammar } from "./grammar.js";
 import { recipes } from "./recipes.js";
 import { highlighting, autocomplete } from "./highlighting.js";
 import { newSemantics, type SemanticError } from "./semantics.js";
-
-function decodeContentFromURL(encodedContent: string): string {
-  try {
-    return decodeURIComponent(encodedContent);
-  } catch (error) {
-    console.error("Failed to decode URL content:", error);
-    return "";
-  }
-}
-
-function getSharedContentFromURL(): string | null {
-  const hash = window.location.hash;
-  if (hash.startsWith("#src=")) {
-    // remove "#src=" prefix
-    return decodeContentFromURL(hash.substring(5));
-  }
-  return null;
-}
-
-function encodeContentToUrl(content: string): string {
-  const encodedContent = encodeURIComponent(content);
-  return `${window.location.pathname}${window.location.search}#src=${encodedContent}`;
-}
+import { getSharedContentFromURL, shareContentViaURL } from "./share.js";
 
 function updateDarkMode(isDark: boolean) {
   if (isDark) {
@@ -223,15 +201,6 @@ window.addEventListener("DOMContentLoaded", () => {
 
   shareButton.addEventListener("click", async () => {
     const currentContent = editor.state.doc.toString();
-    const newURL = encodeContentToUrl(currentContent);
-    window.history.replaceState(null, "", newURL);
-
-    if (navigator.clipboard) {
-      try {
-        await navigator.clipboard.writeText(newURL);
-      } catch (error) {
-        console.error("Failed to copy URL to clipboard:", error);
-      }
-    }
+    await shareContentViaURL(currentContent);
   });
 });

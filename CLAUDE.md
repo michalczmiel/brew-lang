@@ -39,6 +39,7 @@ The DSL supports brewing instructions with constructs like `brewer`, `dose`, `te
 - Dark/light theme toggle
 - Real-time syntax validation and semantic error reporting
 - Sample recipe selection
+- Share recipe via URL
 
 **Technology Stack:**
 
