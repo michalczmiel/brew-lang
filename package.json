@@ -4,8 +4,8 @@
   "description": "Learning project for coffee brewing language",
   "main": "src/main.mjs",
   "scripts": {
-    "build": "bun build ./index.html --outdir ./dist --minify",
-    "dev": "bun ./index.html --console --hostname=0.0.0.0",
+    "build": "vite build",
+    "dev": "vite",
     "check": "tsc --noEmit",
     "lint": "biome lint ./src ./test",
     "format": "biome format ./src ./test --write"
@@ -25,7 +25,8 @@
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
     "@types/bun": "^1.2.20",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "vite": "^7.1.3"
   },
   "packageManager": "bun@1.2.0"
 }

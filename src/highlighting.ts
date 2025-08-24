@@ -12,9 +12,7 @@ export const highlighting = StreamLanguage.define({
     }
 
     // Keywords
-    if (
-      stream.match(/\b(brewer|temperature|dose|water|at|pour|duration|end)\b/)
-    ) {
+    if (stream.match(/\b(brewer|temperature|dose|at|pour|duration|end)\b/)) {
       return "keyword";
     }
 
@@ -52,14 +50,14 @@ export function shouldPreventAutocomplete(textBeforeCursor: string): boolean {
 
   // should not show keyword completions after Keywords that expeect value
   const expectsValueRegex =
-    /\b(brewer|temperature|dose|water|at|pour|duration)\s+\w*$/;
+    /\b(brewer|temperature|dose|at|pour|duration)\s+\w*$/;
   if (expectsValueRegex.test(textBeforeCursor)) {
     return true;
   }
 
   // no autocomplete after root level properties that already have values
   const rootLevelWithValueRegex =
-    /\b(dose|water)\s+\d+(\.\d+)?(\s+\w*)?$|temperature\s+(\d+(\.\d+)?|\d+\.\.\d+)(\s+\w*)?$|brewer\s+\w+(\s+\w*)?$/;
+    /\b(dose)\s+\d+(\.\d+)?(\s+\w*)?$|temperature\s+(\d+(\.\d+)?|\d+\.\.\d+)(\s+\w*)?$|brewer\s+\w+(\s+\w*)?$/;
   if (rootLevelWithValueRegex.test(textBeforeCursor)) {
     return true;
   }
@@ -121,11 +119,6 @@ export function autocomplete(
           label: "dose",
           type: "keyword",
           info: "Set the amount of coffee eg. 20",
-        },
-        {
-          label: "water",
-          type: "keyword",
-          info: "Set the amount of water eg. 300",
         },
         {
           label: "at",

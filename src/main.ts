@@ -1,6 +1,5 @@
 import { basicSetup } from "codemirror";
 import { EditorView, keymap, type Panel, showPanel } from "@codemirror/view";
-import { vim } from "@replit/codemirror-vim";
 import { indentWithTab } from "@codemirror/commands";
 import { oneDark } from "@codemirror/theme-one-dark";
 
@@ -49,7 +48,7 @@ function ratioPanel(view: EditorView): Panel {
   };
 }
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
   const editorContainer = document.getElementById("editor");
   const consoleContainer = document.getElementById("console");
   const vimToggle = document.getElementById("vim-toggle") as HTMLInputElement;
@@ -117,7 +116,7 @@ window.addEventListener("DOMContentLoaded", () => {
     consoleContainer.textContent = "No errors";
   });
 
-  function createEditor({
+  async function createEditor({
     useVim,
     useDark,
     doc,
@@ -127,7 +126,7 @@ window.addEventListener("DOMContentLoaded", () => {
     useDark: boolean;
     doc: string;
     parent: Element;
-  }): EditorView {
+  }): Promise<EditorView> {
     const extensions = [
       basicSetup,
       keymap.of([indentWithTab]),
@@ -139,6 +138,7 @@ window.addEventListener("DOMContentLoaded", () => {
       updateListener,
     ];
     if (useVim) {
+      const { vim } = await import("@replit/codemirror-vim");
       extensions.unshift(vim());
     }
     if (useDark) {
@@ -158,7 +158,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  editor = createEditor({
+  editor = await createEditor({
     useVim: vimModeEnabled,
     useDark: darkModeEnabled,
     doc: initialContent,
@@ -166,7 +166,7 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   editor.focus();
 
-  vimToggle.addEventListener("change", (event) => {
+  vimToggle.addEventListener("change", async (event) => {
     if (!event.target) {
       return;
     }
@@ -178,7 +178,7 @@ window.addEventListener("DOMContentLoaded", () => {
       "vim-mode",
       (event.target as HTMLInputElement).checked.toString(),
     );
-    editor = createEditor({
+    editor = await createEditor({
       useVim: (event.target as HTMLInputElement).checked,
       useDark: darkToggle.checked,
       doc: currentDoc,
@@ -189,7 +189,7 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  darkToggle.addEventListener("change", (event) => {
+  darkToggle.addEventListener("change", async (event) => {
     if (!event.target) {
       return;
     }
@@ -201,7 +201,7 @@ window.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("dark-mode", isDark.toString());
     updateDarkMode(isDark);
 
-    editor = createEditor({
+    editor = await createEditor({
       useVim: vimToggle.checked,
       useDark: isDark,
       doc: currentDoc,

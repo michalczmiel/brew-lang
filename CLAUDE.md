@@ -11,7 +11,7 @@ This is a Domain Specific Language (DSL) for crafting coffee brew recipes, focus
 **Development:**
 
 - `bun dev` - Start development server with live reload (exposed to local network)
-- `bun run build` - Build minified production bundle to ./dist
+- `bun run build` - Build minified production bundle to ./dist with Vite
 - `bun check` - Type check without emitting files
 - `bun test` - Run all tests
 - `bun lint` - Lint source and test files with Biome
@@ -30,7 +30,7 @@ It's imporant that you don't run dev server unless asked. After making changes e
 - `src/recipes.ts` - Sample brew recipes in the DSL
 
 **Language Structure:**
-The DSL supports brewing instructions with constructs like `brewer`, `dose`, `temperature`, `water`, and timed steps with `at X:XX ... end` blocks containing `pour` and `duration` instructions. Comments use `#` syntax.
+The DSL supports brewing instructions with constructs like `brewer`, `dose`, `temperature` and timed steps with `at X:XX ... end` blocks containing `pour` and `duration` instructions. Comments use `#` syntax.
 
 **Editor Features:**
 

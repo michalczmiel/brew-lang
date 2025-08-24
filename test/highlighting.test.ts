@@ -46,23 +46,17 @@ test.each([
   "brewer ",
   "temperature ",
   "dose ",
-  "water ",
   "at ",
   "pour ",
   "duration ",
   "brewer v",
   "temperature 9",
   "dose 2",
-  "water 30",
   "pour 10",
   "dose 20",
   "dose 20.5",
   "dose 20 ",
   "dose 20 g",
-  "water 300",
-  "water 300.5",
-  "water 300 ",
-  "water 300 ml",
   "temperature 95",
   "temperature 95.5",
   "temperature 86..90",
@@ -75,7 +69,6 @@ test.each([
   "brewer v60 ",
   "brewer origami filter",
   "dose 20\n",
-  "temperature 95\nwater 300\n",
   "brewer v60\ndose 20\n",
   "dose 20\ntemp",
   "at 0:00\n  pour ",
@@ -86,7 +79,6 @@ test.each([
 
 test("should handle multiline content correctly", () => {
   const multilineContent = `dose 20
-temperature 95
-water `;
+    temperature 95`;
   expect(shouldPreventAutocomplete(multilineContent)).toBe(true);
 });
