@@ -3,14 +3,17 @@ import { test, expect } from "bun:test";
 import { grammar } from "../src/grammar.js";
 import { newSemantics, type SemanticError } from "../src/semantics.js";
 
-test("dose amount cannot be zero", () => {
+test.each([
+  ["dose 0", "Dose amount cannot be zero"],
+  ["dose 090", "Number cannot start with zero"],
+])("validate dose", (input, expectedMessage) => {
   const semantics = newSemantics(grammar);
-  const match = grammar.match("dose 0");
+  const match = grammar.match(input);
 
   const result: SemanticError[] = semantics(match).validate();
 
   expect(result).toHaveLength(1);
-  expect(result[0]?.message).toBe("Dose amount cannot be zero");
+  expect(result[0]?.message).toBe(expectedMessage);
 });
 
 test("pour amount cannot be zero", () => {
@@ -23,38 +26,25 @@ test("pour amount cannot be zero", () => {
   expect(result[0]?.message).toBe("Pour amount cannot be zero");
 });
 
-test("temperature amount cannot be zero", () => {
-  const semantics = newSemantics(grammar);
-  const match = grammar.match("temperature 0");
-
-  const result: SemanticError[] = semantics(match).validate();
-
-  expect(result).toHaveLength(1);
-  expect(result[0]?.message).toBe("Temperature amount cannot be zero");
-});
-
-test("temperature range cannot have lower bound greater than upper bound", () => {
-  const semantics = newSemantics(grammar);
-  const match = grammar.match("temperature 100..50");
-
-  const result: SemanticError[] = semantics(match).validate();
-
-  expect(result).toHaveLength(1);
-  expect(result[0]?.message).toBe(
+test.each([
+  ["temperature 0", "Temperature amount cannot be zero"],
+  [
+    "temperature 100..50",
     "Range cannot have lower bound greater than upper bound",
-  );
-});
-
-test("temperature range cannot have lower bound equal to upper bound", () => {
+  ],
+  [
+    "temperature 100..100",
+    "Range cannot have lower bound equal to upper bound",
+  ],
+  ["temperature 090", "Number cannot start with zero"],
+])("validate temperature", (input, expectedMessage) => {
   const semantics = newSemantics(grammar);
-  const match = grammar.match("temperature 100..100");
+  const match = grammar.match(input);
 
   const result: SemanticError[] = semantics(match).validate();
 
   expect(result).toHaveLength(1);
-  expect(result[0]?.message).toBe(
-    "Range cannot have lower bound equal to upper bound",
-  );
+  expect(result[0]?.message).toBe(expectedMessage);
 });
 
 test.each([

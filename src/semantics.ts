@@ -43,7 +43,22 @@ export function newSemantics(grammar: Grammar): Semantics {
       return results.flat();
     },
     number(x) {
-      const value = parseFloat(x.sourceString);
+      const sourceString = x.sourceString;
+
+      if (
+        sourceString.length > 1 &&
+        sourceString.startsWith("0") &&
+        !sourceString.startsWith("0.")
+      ) {
+        return [
+          {
+            message: "Number cannot start with zero",
+            formatted: this.source.getLineAndColumnMessage(),
+          },
+        ];
+      }
+
+      const value = parseFloat(sourceString);
       if (value === 0) {
         return [
           {
