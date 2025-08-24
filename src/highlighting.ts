@@ -96,6 +96,11 @@ export function autocomplete(
           info: "Set a duration for a step, eg. duration 0:30",
         },
         {
+          label: "temperature",
+          type: "keyword",
+          info: "Set the temperature for this step, eg. temperature 85",
+        },
+        {
           label: "end",
           type: "keyword",
           info: "End the current step",

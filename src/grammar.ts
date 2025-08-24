@@ -11,7 +11,7 @@ export const grammar = ohm.grammar(String.raw`
     water = "water" " " number
 
     step = "at" " " duration_number " "* comment? newline? instruction* "end"
-    instruction = " "* (duration | pour | comment) (" " | newline | &"end")
+    instruction = " "* (duration | pour | temperature | comment) (" " | newline | &"end")
     duration = "duration" " " duration_number
     pour = "pour" " " number
 

@@ -17,6 +17,8 @@ This is a Domain Specific Language (DSL) for crafting coffee brew recipes, focus
 - `bun lint` - Lint source and test files with Biome
 - `bun format` - Format source and test files with Biome
 
+It's imporant that you don't run dev server unless asked. After making changes ensure build, check, lint, test and format are passing.
+
 ## Architecture
 
 **Core Components:**
