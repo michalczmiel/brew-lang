@@ -1,5 +1,5 @@
 import { basicSetup } from "codemirror";
-import { EditorView, keymap } from "@codemirror/view";
+import { EditorView, keymap, type Panel, showPanel } from "@codemirror/view";
 import { vim } from "@replit/codemirror-vim";
 import { indentWithTab } from "@codemirror/commands";
 import { oneDark } from "@codemirror/theme-one-dark";
@@ -10,12 +10,42 @@ import { highlighting, autocomplete } from "./highlighting.js";
 import { newSemantics, type SemanticError } from "./semantics.js";
 import { getSharedContentFromURL, shareContentViaURL } from "./share.js";
 
+const semantics = newSemantics(grammar);
+
 function updateDarkMode(isDark: boolean) {
   if (isDark) {
     document.documentElement.classList.add("dark");
   } else {
     document.documentElement.classList.remove("dark");
   }
+}
+
+function getRatioLabel(text: string): string | null {
+  const match = grammar.match(text);
+  if (!match.succeeded()) {
+    return "";
+  }
+
+  const ratio: null | string = semantics(match).calculateRatio();
+
+  if (!ratio) {
+    return "";
+  }
+
+  return `Ratio: ${ratio}`;
+}
+
+function ratioPanel(view: EditorView): Panel {
+  let dom = document.createElement("div");
+
+  dom.textContent = getRatioLabel(view.state.doc.toString());
+
+  return {
+    dom,
+    update(update) {
+      dom.textContent = getRatioLabel(view.state.doc.toString());
+    },
+  };
 }
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -55,8 +85,6 @@ window.addEventListener("DOMContentLoaded", () => {
   darkToggle.checked = darkModeEnabled;
 
   updateDarkMode(darkModeEnabled);
-
-  const semantics = newSemantics(grammar);
 
   let editor: EditorView;
 
@@ -106,6 +134,7 @@ window.addEventListener("DOMContentLoaded", () => {
       highlighting.data.of({
         autocomplete,
       }),
+      showPanel.of(ratioPanel),
       updateListener,
     ];
     if (useVim) {
