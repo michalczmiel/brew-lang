@@ -9,10 +9,6 @@ import { glitchCoffeeOrigamiHot, jamesHoffmannAeropress } from "./recipes.js";
 import { highlighting, autocomplete } from "./highlighting.js";
 import { newSemantics, type SemanticError } from "./semantics.js";
 
-function encodeContentToURL(content: string): string {
-  return encodeURIComponent(content);
-}
-
 function decodeContentFromURL(encodedContent: string): string {
   try {
     return decodeURIComponent(encodedContent);
@@ -25,15 +21,15 @@ function decodeContentFromURL(encodedContent: string): string {
 function getSharedContentFromURL(): string | null {
   const hash = window.location.hash;
   if (hash.startsWith("#src=")) {
-    return decodeContentFromURL(hash.substring(5)); // Remove "#src=" prefix
+    // remove "#src=" prefix
+    return decodeContentFromURL(hash.substring(5));
   }
   return null;
 }
 
-function updateURLWithContent(content: string): void {
-  const encodedContent = encodeContentToURL(content);
-  const newURL = `${window.location.pathname}${window.location.search}#src=${encodedContent}`;
-  window.history.replaceState(null, "", newURL);
+function encodeContentToUrl(content: string): string {
+  const encodedContent = encodeURIComponent(content);
+  return `${window.location.pathname}${window.location.search}#src=${encodedContent}`;
 }
 
 function updateDarkMode(isDark: boolean) {
@@ -233,8 +229,17 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  shareButton.addEventListener("click", () => {
+  shareButton.addEventListener("click", async () => {
     const currentContent = editor.state.doc.toString();
-    updateURLWithContent(currentContent);
+    const newURL = encodeContentToUrl(currentContent);
+    window.history.replaceState(null, "", newURL);
+
+    if (navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(newURL);
+      } catch (error) {
+        console.error("Failed to copy URL to clipboard:", error);
+      }
+    }
   });
 });
