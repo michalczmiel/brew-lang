@@ -5,7 +5,7 @@
   "main": "src/main.mjs",
   "scripts": {
     "build": "bun build ./index.html --outdir ./dist --minify",
-    "dev": "bun ./index.html --console",
+    "dev": "bun ./index.html --console --hostname=0.0.0.0",
     "check": "tsc --noEmit",
     "lint": "biome lint ./src ./test",
     "format": "biome format ./src ./test --write"
