@@ -26,24 +26,25 @@ function getRatioLabel(text: string): string | null {
     return "";
   }
 
-  const ratio: null | string = semantics(match).calculateRatio();
+  const result: null | { ratio: string; water: number } =
+    semantics(match).calculateRatio();
 
-  if (!ratio) {
+  if (!result) {
     return "";
   }
 
-  return `Ratio: ${ratio}`;
+  return `Ratio: ${result.ratio} | Water: ${result.water}`;
 }
 
 function ratioPanel(view: EditorView): Panel {
-  let dom = document.createElement("div");
+  const dom = document.createElement("div");
 
   dom.textContent = getRatioLabel(view.state.doc.toString());
 
   return {
     dom,
     update(update) {
-      dom.textContent = getRatioLabel(view.state.doc.toString());
+      dom.textContent = getRatioLabel(update.view.state.doc.toString());
     },
   };
 }

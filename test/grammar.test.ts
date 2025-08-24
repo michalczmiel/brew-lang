@@ -31,7 +31,9 @@ test("correctly parses comment with recipe elements", () => {
 dose 20
 temperature 94
 # Add hot water
-water 300
+at 0:00
+  pour 300
+end
 `;
   const match = grammar.match(recipe);
   expect(match.succeeded(), match.message).toBeTruthy();

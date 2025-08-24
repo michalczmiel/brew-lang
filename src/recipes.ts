@@ -4,7 +4,6 @@ const glitchCoffeeOrigamiHot = `
 
 temperature 86..90
 dose 14.5
-water 260
 brewer origami
 
 at 0:00
@@ -29,7 +28,6 @@ const jamesHoffmannAeropress = `
 # James Hoffmann Ultimate AeroPress
 
 temperature 85..99
-water 200
 dose 11
 brewer aeropress
 
@@ -53,7 +51,6 @@ const tetsuKasuyaHybridMethod = `
 # Tetsu Kasuya Hybrid method
 
 dose 20
-water 260
 brewer hario switch
 
 at 0:00

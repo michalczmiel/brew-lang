@@ -29,7 +29,6 @@ export function newSemantics(grammar: Grammar): Semantics {
       }
 
       checkDuplicates("dose", "Recipe cannot have multiple dose definitions");
-      checkDuplicates("water", "Recipe cannot have multiple water definitions");
       checkDuplicates(
         "brewer",
         "Recipe cannot have multiple brewer definitions",
@@ -59,16 +58,6 @@ export function newSemantics(grammar: Grammar): Semantics {
       return keyword.validate();
     },
     newline(_) {
-      return [];
-    },
-    water(_keyword, _space, number) {
-      const result = number.validate();
-      if (Array.isArray(result)) {
-        return result.map((error) => ({
-          ...error,
-          message: error.message.replace("Amount", "Water amount"),
-        }));
-      }
       return [];
     },
     comment(_hash, _content) {
@@ -166,7 +155,22 @@ export function newSemantics(grammar: Grammar): Semantics {
   semantics.addOperation("calculateRatio", {
     recipe(lines) {
       let dose: number | null = null;
-      let water: number | null = null;
+      let totalWater = 0;
+
+      function collectPours(node: { ctorName?: string; children?: any }): void {
+        if (node.ctorName === "pour" && node.children?.[2]) {
+          const pourAmount = node.children[2].calculateRatio();
+          if (typeof pourAmount === "number") {
+            totalWater += pourAmount;
+          }
+        }
+
+        if (node.children) {
+          for (const child of node.children) {
+            collectPours(child);
+          }
+        }
+      }
 
       for (const line of lines.children) {
         if (line.ctorName !== "line") {
@@ -176,17 +180,37 @@ export function newSemantics(grammar: Grammar): Semantics {
         const keyword = line.children[0];
         if (keyword?.ctorName === "dose" && keyword.children[2]) {
           dose = keyword.children[2].calculateRatio();
-        } else if (keyword?.ctorName === "water" && keyword.children[2]) {
-          water = keyword.children[2].calculateRatio();
+        } else if (keyword?.ctorName === "step") {
+          collectPours(keyword);
         }
       }
 
-      if (!dose || !water || dose === 0) {
-        return null;
+      if (!dose && !totalWater) {
+        return {
+          ratio: "Missing dose and water to calculate",
+          water: 0,
+        };
       }
 
-      const ratio = water / dose;
-      return `1:${ratio.toFixed(1)}`;
+      if (dose && !totalWater) {
+        return {
+          ratio: "Missing water to calculate",
+          water: 0,
+        };
+      }
+
+      if (!dose || dose === 0) {
+        return {
+          ratio: "Missing dose to calculate",
+          water: totalWater,
+        };
+      }
+
+      const ratio = totalWater / dose;
+      return {
+        ratio: `1:${ratio.toFixed(1)}`,
+        water: totalWater,
+      };
     },
     _iter(...children) {
       return (
@@ -201,9 +225,6 @@ export function newSemantics(grammar: Grammar): Semantics {
     },
     newline(_) {
       return null;
-    },
-    water(_keyword, _space, number) {
-      return number.calculateRatio();
     },
     comment(_hash, _content) {
       return null;
