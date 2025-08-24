@@ -31,8 +31,8 @@ export function newSemantics(grammar: Grammar): Semantics {
       checkDuplicates("dose", "Recipe cannot have multiple dose definitions");
       checkDuplicates("water", "Recipe cannot have multiple water definitions");
       checkDuplicates(
-        "method",
-        "Recipe cannot have multiple method definitions",
+        "brewer",
+        "Recipe cannot have multiple brewer definitions",
       );
 
       return errors;
@@ -74,7 +74,7 @@ export function newSemantics(grammar: Grammar): Semantics {
     comment(_hash, _content) {
       return [];
     },
-    method(_keyword, _space, _content) {
+    brewer(_keyword, _space, _content) {
       return [];
     },
     dose(_keyword, _space, number) {

@@ -13,7 +13,7 @@ export const highlighting = StreamLanguage.define({
 
     // Keywords
     if (
-      stream.match(/\b(method|temperature|dose|water|at|pour|duration|end)\b/)
+      stream.match(/\b(brewer|temperature|dose|water|at|pour|duration|end)\b/)
     ) {
       return "keyword";
     }
@@ -52,14 +52,14 @@ export function shouldPreventAutocomplete(textBeforeCursor: string): boolean {
 
   // should not show keyword completions after Keywords that expeect value
   const expectsValueRegex =
-    /\b(method|temperature|dose|water|at|pour|duration)\s+\w*$/;
+    /\b(brewer|temperature|dose|water|at|pour|duration)\s+\w*$/;
   if (expectsValueRegex.test(textBeforeCursor)) {
     return true;
   }
 
   // no autocomplete after root level properties that already have values
   const rootLevelWithValueRegex =
-    /\b(dose|water)\s+\d+(\.\d+)?(\s+\w*)?$|temperature\s+(\d+(\.\d+)?|\d+\.\.\d+)(\s+\w*)?$|method\s+\w+(\s+\w*)?$/;
+    /\b(dose|water)\s+\d+(\.\d+)?(\s+\w*)?$|temperature\s+(\d+(\.\d+)?|\d+\.\.\d+)(\s+\w*)?$|brewer\s+\w+(\s+\w*)?$/;
   if (rootLevelWithValueRegex.test(textBeforeCursor)) {
     return true;
   }
@@ -108,9 +108,9 @@ export function autocomplete(
       ]
     : [
         {
-          label: "method",
+          label: "brewer",
           type: "keyword",
-          info: "Define a method like V60",
+          info: "Define a brewer like V60",
         },
         {
           label: "temperature",

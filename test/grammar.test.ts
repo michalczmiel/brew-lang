@@ -1,13 +1,16 @@
 import { test, expect } from "bun:test";
 
 import { grammar } from "../src/grammar.js";
-import { glitchCoffeeOrigamiHot } from "../src/recipes.js";
+import { recipes } from "../src/recipes.js";
 
-test("correctly parses full valid recipe", () => {
-  const match = grammar.match(glitchCoffeeOrigamiHot);
+test.each(Object.values(recipes))(
+  "correctly parses full valid recipe",
+  (recipe) => {
+    const match = grammar.match(recipe);
 
-  expect(match.succeeded(), match.message).toBeTruthy();
-});
+    expect(match.succeeded(), match.message).toBeTruthy();
+  },
+);
 
 test("temperature without number", () => {
   const match = grammar.match("temperature");
@@ -62,7 +65,7 @@ end`;
 test.each(["v60", "origami", "french press", "chemex"])(
   "correctly parses different brewing methods",
   (method) => {
-    const match = grammar.match(`method ${method}`);
+    const match = grammar.match(`brewer ${method}`);
     expect(match.succeeded(), match.message).toBeTruthy();
   },
 );

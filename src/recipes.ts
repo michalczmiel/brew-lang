@@ -5,7 +5,7 @@ const glitchCoffeeOrigamiHot = `
 temperature 86..90
 dose 14.5
 water 260
-method origami
+brewer origami
 
 at 0:00
   pour 30
@@ -31,10 +31,10 @@ const jamesHoffmannAeropress = `
 temperature 85..99
 water 200
 dose 11
-
-# don't rinse paper
+brewer aeropress
 
 at 0:00
+  # don't rinse paper
   pour 200
   # then place the plunger on top
 end
@@ -54,7 +54,7 @@ const tetsuKasuyaHybridMethod = `
 
 dose 20
 water 260
-method hario switch
+brewer hario switch
 
 at 0:00
   temperature 90

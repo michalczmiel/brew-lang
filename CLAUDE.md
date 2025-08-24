@@ -30,7 +30,7 @@ It's imporant that you don't run dev server unless asked. After making changes e
 - `src/recipes.ts` - Sample brew recipes in the DSL
 
 **Language Structure:**
-The DSL supports brewing instructions with constructs like `method`, `dose`, `temperature`, `water`, and timed steps with `at X:XX ... end` blocks containing `pour` and `duration` instructions. Comments use `#` syntax.
+The DSL supports brewing instructions with constructs like `brewer`, `dose`, `temperature`, `water`, and timed steps with `at X:XX ... end` blocks containing `pour` and `duration` instructions. Comments use `#` syntax.
 
 **Editor Features:**
 

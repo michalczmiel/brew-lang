@@ -208,7 +208,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const selectedValue = (event.target as HTMLSelectElement).value;
     if (!selectedValue) return;
 
-    let recipeContent = recipes[selectedValue as keyof typeof recipes];
+    const recipeContent = recipes[selectedValue as keyof typeof recipes];
 
     if (recipeContent) {
       editor.dispatch({

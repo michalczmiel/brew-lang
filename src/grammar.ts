@@ -3,9 +3,9 @@ import * as ohm from "ohm-js";
 export const grammar = ohm.grammar(String.raw`
   BrewLang {
     recipe = (line | comment | newline)*
-    line = (method | step | temperature | water | dose) " "* comment? newline?
+    line = (brewer | step | temperature | water | dose) " "* comment? newline?
 
-    method = "method" " " (~(newline | comment) any)+
+    brewer = "brewer" " " (~(newline | comment) any)+
     dose = "dose" " " number
     temperature = "temperature" " " (range | number)+
     water = "water" " " number
