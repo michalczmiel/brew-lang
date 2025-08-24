@@ -66,7 +66,16 @@ export function newSemantics(grammar: Grammar): Semantics {
         message: error.message.replace("Amount", "Temperature amount"),
       }));
     },
-    step(_keyword, _space, _duration, _spaces, _comment, _newline, instructions, _end) {
+    step(
+      _keyword,
+      _space,
+      _duration,
+      _spaces,
+      _comment,
+      _newline,
+      instructions,
+      _end,
+    ) {
       return instructions.validate();
     },
     instruction(_spaces, content, _terminator) {

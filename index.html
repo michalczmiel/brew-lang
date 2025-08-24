@@ -49,12 +49,21 @@
 
       .controls {
         margin-bottom: 10px;
+        padding-top: 10px;
+        padding-left: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
       }
 
       .controls label {
         color: var(--text-color);
-        margin-right: 20px;
         font-size: 14px;
+      }
+
+      .controls .toggles {
+        display: flex;
+        gap: 20px;
       }
 
       .error-sidebar {
@@ -112,9 +121,24 @@
       <main class="editor-section">
         <div class="controls">
           <label>
-            <input type="checkbox" id="vim-toggle" /> Enable Vim Mode
+            Recipe:
+            <select id="recipe-select">
+              <option value="glitchCoffeeOrigamiHot" selected>
+                Glitch Coffee Origami Hot
+              </option>
+              <option value="jamesHoffmannAeropress">
+                James Hoffmann AeroPress
+              </option>
+            </select>
           </label>
-          <label> <input type="checkbox" id="dark-toggle" /> Dark Mode </label>
+          <div class="toggles">
+            <label>
+              <input type="checkbox" id="vim-toggle" /> Enable Vim Mode
+            </label>
+            <label>
+              <input type="checkbox" id="dark-toggle" /> Dark Mode
+            </label>
+          </div>
         </div>
         <div id="editor"></div>
       </main>

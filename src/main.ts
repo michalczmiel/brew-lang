@@ -5,7 +5,7 @@ import { indentWithTab } from "@codemirror/commands";
 import { oneDark } from "@codemirror/theme-one-dark";
 
 import { grammar } from "./grammar.js";
-import { glitchCoffeeOrigamiHot } from "./recipes.js";
+import { glitchCoffeeOrigamiHot, jamesHoffmannAeropress } from "./recipes.js";
 import { highlighting, autocomplete } from "./highlighting.js";
 import { newSemantics, type SemanticError } from "./semantics.js";
 
@@ -22,8 +22,17 @@ window.addEventListener("DOMContentLoaded", () => {
   const consoleContainer = document.getElementById("console");
   const vimToggle = document.getElementById("vim-toggle") as HTMLInputElement;
   const darkToggle = document.getElementById("dark-toggle") as HTMLInputElement;
+  const recipeSelect = document.getElementById(
+    "recipe-select",
+  ) as HTMLSelectElement;
 
-  if (!editorContainer || !consoleContainer || !vimToggle || !darkToggle) {
+  if (
+    !editorContainer ||
+    !consoleContainer ||
+    !vimToggle ||
+    !darkToggle ||
+    !recipeSelect
+  ) {
     console.error("Required elements not found in the DOM.");
     return;
   }
@@ -163,5 +172,30 @@ window.addEventListener("DOMContentLoaded", () => {
     editor.dispatch({
       changes: { from: 0, to: editor.state.doc.length, insert: currentDoc },
     });
+  });
+
+  recipeSelect.addEventListener("change", (event) => {
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    if (!selectedValue) return;
+
+    let recipeContent = "";
+    switch (selectedValue) {
+      case "glitchCoffeeOrigamiHot":
+        recipeContent = glitchCoffeeOrigamiHot;
+        break;
+      case "jamesHoffmannAeropress":
+        recipeContent = jamesHoffmannAeropress;
+        break;
+    }
+
+    if (recipeContent) {
+      editor.dispatch({
+        changes: {
+          from: 0,
+          to: editor.state.doc.length,
+          insert: recipeContent,
+        },
+      });
+    }
   });
 });
