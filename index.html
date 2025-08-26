@@ -82,7 +82,7 @@
         opacity: 0.8;
       }
 
-      .error-sidebar {
+      .sidebar {
         width: 300px;
         padding: 10px;
         border-left: 1px solid var(--border-color);
@@ -90,16 +90,63 @@
         color: var(--text-color);
       }
 
-      .error-sidebar h3 {
-        margin-top: 0;
-        margin-bottom: 10px;
-        font-size: 16px;
+      .sidebar__controls {
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        justify-content: space-around;
+        margin-bottom: 20px;
       }
 
-      .error-sidebar pre {
+      .sidebar button {
+        background: none;
+        border: none;
+        color: var(--text-color);
+        cursor: pointer;
+      }
+
+      .sidebar pre {
         margin: 0;
         white-space: pre-wrap;
         word-wrap: break-word;
+        font-size: 12px;
+        max-height: calc(100vh - 100px);
+        overflow-y: auto;
+      }
+
+      /* Make only the console area selectable when focused */
+      body {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      #console {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
+        outline: none;
+        display: block;
+        width: 100%;
+        cursor: text;
+      }
+
+      #console:focus {
+        outline: 2px solid var(--border-color);
+        outline-offset: -2px;
+      }
+
+      /* Allow selection for interactive elements */
+      input,
+      select,
+      button,
+      label {
+        -webkit-user-select: text;
+        -moz-user-select: text;
+        -ms-user-select: text;
+        user-select: text;
       }
 
       @media (max-width: 768px) {
@@ -108,7 +155,7 @@
           height: auto;
         }
 
-        .error-sidebar {
+        .sidebar {
           width: auto;
           border-left: none;
           border-top: 1px solid var(--border-color);
@@ -162,11 +209,59 @@
         </div>
         <div id="editor"></div>
       </main>
-      <aside class="error-sidebar">
-        <h3>Errors</h3>
-        <pre id="console">No errors</pre>
+      <aside class="sidebar">
+        <div class="sidebar__controls">
+          <button
+            id="button-output-errors"
+            role="tab"
+            tabindex="0"
+            aria-selected="true"
+          >
+            Errors
+          </button>
+          <button
+            id="button-output-ast"
+            role="tab"
+            tabindex="1"
+            aria-selected="false"
+          >
+            AST
+          </button>
+        </div>
+        <pre><code id="console" tabindex="0">No errors</code></pre>
       </aside>
     </div>
+    <script>
+      // Handle Ctrl+A/Cmd+A to select only AST content when console is focused
+      document.addEventListener("keydown", function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === "a") {
+          const console = document.getElementById("console");
+          if (
+            document.activeElement === console ||
+            console.contains(document.activeElement)
+          ) {
+            e.preventDefault();
+            const range = document.createRange();
+            range.selectNodeContents(console);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+        }
+      });
+
+      // Auto-focus console when AST tab is clicked
+      document.addEventListener("DOMContentLoaded", function () {
+        const astButton = document.getElementById("button-output-ast");
+        if (astButton) {
+          astButton.addEventListener("click", function () {
+            setTimeout(() => {
+              document.getElementById("console").focus();
+            }, 0);
+          });
+        }
+      });
+    </script>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

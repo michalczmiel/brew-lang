@@ -115,18 +115,20 @@ test("complex recipe with multiple steps converts to AST", () => {
       "dose": 11,
       "steps": [
         {
-          "instructions": [
+          "comments": [
             {
               "text": "don't rinse paper",
               "type": "comment",
             },
             {
+              "text": "after pouring, place the plunger on top",
+              "type": "comment",
+            },
+          ],
+          "instructions": [
+            {
               "type": "pour",
               "value": 200,
-            },
-            {
-              "text": "then place the plunger on top",
-              "type": "comment",
             },
           ],
           "time": {
@@ -136,6 +138,7 @@ test("complex recipe with multiple steps converts to AST", () => {
           "type": "step",
         },
         {
+          "comments": [],
           "instructions": [
             {
               "type": "swirl",
@@ -148,12 +151,13 @@ test("complex recipe with multiple steps converts to AST", () => {
           "type": "step",
         },
         {
-          "instructions": [
+          "comments": [
             {
               "text": "press",
               "type": "comment",
             },
           ],
+          "instructions": [],
           "time": {
             "minutes": 2,
             "seconds": 30,
@@ -188,11 +192,13 @@ test("complex recipe with temperature inside step to AST", () => {
       "dose": 20,
       "steps": [
         {
-          "instructions": [
+          "comments": [
             {
               "text": "open switch",
               "type": "comment",
             },
+          ],
+          "instructions": [
             {
               "type": "pour",
               "value": 60,
@@ -206,6 +212,7 @@ test("complex recipe with temperature inside step to AST", () => {
           "type": "step",
         },
         {
+          "comments": [],
           "instructions": [
             {
               "type": "pour",
@@ -220,11 +227,13 @@ test("complex recipe with temperature inside step to AST", () => {
           "type": "step",
         },
         {
-          "instructions": [
+          "comments": [
             {
               "text": "close switch",
               "type": "comment",
             },
+          ],
+          "instructions": [
             {
               "type": "pour",
               "value": 160,
@@ -238,12 +247,13 @@ test("complex recipe with temperature inside step to AST", () => {
           "type": "step",
         },
         {
-          "instructions": [
+          "comments": [
             {
               "text": "open switch",
               "type": "comment",
             },
           ],
+          "instructions": [],
           "time": {
             "minutes": 1,
             "seconds": 45,

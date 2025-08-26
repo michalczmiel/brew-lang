@@ -34,7 +34,7 @@ brewer aeropress
 at 0:00
   # don't rinse paper
   pour 200
-  # then place the plunger on top
+  # after pouring, place the plunger on top
 end
 
 at 2:00

@@ -28,9 +28,9 @@ export interface InstructionAST {
 export interface StepAST {
   type: "step";
   time: Duration;
-  comment?: string;
   instructions: InstructionAST[];
   temperature?: TemperatureRange | number;
+  comments: CommentAST[];
 }
 
 export interface RecipeAST {
@@ -326,14 +326,15 @@ export function newSemantics(grammar: Grammar): Semantics {
       instructions,
       _end,
     ): StepAST {
-      let commentText: string | undefined;
+      const comments: CommentAST[] = [];
+
       if (comment.sourceString) {
         // comment is an _iter that may contain a comment node
         const commentResults = comment.toAST();
         if (Array.isArray(commentResults) && commentResults.length > 0) {
           const commentAST = commentResults[0];
           if (commentAST && commentAST.type === "comment") {
-            commentText = commentAST.text;
+            comments.push(commentAST);
           }
         }
       }
@@ -344,6 +345,8 @@ export function newSemantics(grammar: Grammar): Semantics {
       for (const instruction of instructions.toAST()) {
         if (instruction.type === "temperature") {
           temperature = instruction.value;
+        } else if (instruction.type === "comment") {
+          comments.push(instruction);
         } else {
           instructionAstList.push(instruction);
         }
@@ -352,9 +355,9 @@ export function newSemantics(grammar: Grammar): Semantics {
       return {
         type: "step",
         time: duration.toAST(),
-        ...(commentText && { comment: commentText }),
-        ...(temperature && { temperature }),
+        comments,
         instructions: instructionAstList,
+        ...(temperature && { temperature }),
       };
     },
     instruction(_spaces, content, _terminator) {

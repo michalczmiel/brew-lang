@@ -60,13 +60,23 @@ window.addEventListener("DOMContentLoaded", async () => {
     "share-button",
   ) as HTMLButtonElement;
 
+  const outputErrorsButton = document.getElementById(
+    "button-output-errors",
+  ) as HTMLButtonElement;
+
+  const outputAstButton = document.getElementById(
+    "button-output-ast",
+  ) as HTMLButtonElement;
+
   if (
     !editorContainer ||
     !consoleContainer ||
     !vimToggle ||
     !darkToggle ||
     !recipeSelect ||
-    !shareButton
+    !shareButton ||
+    !outputErrorsButton ||
+    !outputAstButton
   ) {
     console.error("Required elements not found in the DOM.");
     return;
@@ -90,6 +100,40 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const sharedContent = getSharedContentFromURL();
   const initialContent = sharedContent || recipes.glitchCoffeeOrigamiHot;
+  let outputMode = "errors";
+
+  function updateOutput(content: string): void {
+    if (!consoleContainer) return;
+
+    const match = grammar.match(content);
+
+    if (!match.succeeded()) {
+      consoleContainer.textContent = match.message ?? "Syntax error";
+      return;
+    }
+
+    if (outputMode === "ast") {
+      try {
+        const ast = semantics(match).toAST();
+        consoleContainer.textContent = JSON.stringify(ast, null, 2);
+      } catch (error) {
+        consoleContainer.textContent = `Error generating AST: ${error}`;
+      }
+      return;
+    }
+
+    // Default to errors mode
+    const semanticErrors: SemanticError[] = semantics(match).validate();
+    if (semanticErrors.length > 0) {
+      const errorMessages = semanticErrors
+        .map((error) => `${error.formatted}${error.message}`)
+        .join("\n\n");
+      consoleContainer.textContent = errorMessages;
+      return;
+    }
+
+    consoleContainer.textContent = "No errors";
+  }
 
   const updateListener = EditorView.updateListener.of((update) => {
     if (!update.docChanged) {
@@ -97,23 +141,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
 
     const content = update.state.doc.toString();
-    const match = grammar.match(content);
-    if (!match.succeeded()) {
-      consoleContainer.textContent = match.message ?? "Syntax error";
-      return;
-    }
-
-    const semanticErrors: SemanticError[] = semantics(match).validate();
-    if (semanticErrors.length > 0) {
-      const errorMessages = semanticErrors
-        .map((error) => `${error.formatted}${error.message}`)
-        .join("\n\n");
-
-      consoleContainer.textContent = errorMessages;
-      return;
-    }
-
-    consoleContainer.textContent = "No errors";
+    updateOutput(content);
   });
 
   async function createEditor({
@@ -232,5 +260,21 @@ window.addEventListener("DOMContentLoaded", async () => {
   shareButton.addEventListener("click", async () => {
     const currentContent = editor.state.doc.toString();
     await shareContentViaURL(currentContent);
+  });
+
+  outputErrorsButton.addEventListener("click", async () => {
+    outputMode = "errors";
+    updateOutput(editor.state.doc.toString());
+
+    outputErrorsButton.setAttribute("aria-selected", "true");
+    outputAstButton.setAttribute("aria-selected", "false");
+  });
+
+  outputAstButton.addEventListener("click", async () => {
+    outputMode = "ast";
+    updateOutput(editor.state.doc.toString());
+
+    outputAstButton.setAttribute("aria-selected", "true");
+    outputErrorsButton.setAttribute("aria-selected", "false");
   });
 });
