@@ -5,6 +5,91 @@ export interface SemanticError {
   formatted: string;
 }
 
+export interface Duration {
+  minutes: number;
+  seconds: number;
+}
+
+export interface TemperatureRange {
+  min: number;
+  max: number;
+}
+
+export interface CommentAST {
+  type: "comment";
+  text: string;
+}
+
+export interface InstructionAST {
+  type: "pour" | "duration" | "swirl" | "stir";
+  value?: number | Duration | TemperatureRange;
+}
+
+export interface StepAST {
+  type: "step";
+  time: Duration;
+  comment?: string;
+  instructions: InstructionAST[];
+  temperature?: TemperatureRange | number;
+}
+
+export interface RecipeAST {
+  type: "recipe";
+  brewer?: string;
+  dose?: number;
+  temperature?: TemperatureRange | number;
+  steps: StepAST[];
+  comments: CommentAST[];
+}
+
+export interface RatioResult {
+  ratio: string;
+  water: number;
+}
+
+export function calculateRatioFromAST(ast: RecipeAST): RatioResult {
+  const dose = ast.dose;
+
+  const totalWater = ast.steps.reduce((sum, step) => {
+    return (
+      sum +
+      step.instructions.reduce((stepSum, instruction) => {
+        return instruction.type === "pour" &&
+          typeof instruction.value === "number"
+          ? stepSum + instruction.value
+          : stepSum;
+      }, 0)
+    );
+  }, 0);
+
+  if (!dose && !totalWater) {
+    return {
+      ratio: "Missing dose and water to calculate",
+      water: 0,
+    };
+  }
+
+  if (dose && !totalWater) {
+    return {
+      ratio: "Missing water to calculate",
+      water: 0,
+    };
+  }
+
+  if (!dose || dose === 0) {
+    return {
+      ratio: "Missing dose to calculate",
+      water: totalWater,
+    };
+  }
+
+  const ratio = totalWater / dose;
+  return {
+    ratio: `1:${ratio.toFixed(1)}`,
+    water: totalWater,
+  };
+}
+
 export function newSemantics(grammar: Grammar): Semantics {
   const semantics = grammar.createSemantics();
 
@@ -173,130 +258,159 @@ export function newSemantics(grammar: Grammar): Semantics {
     },
   });
 
-  semantics.addOperation("calculateRatio", {
-    recipe(lines) {
-      let dose: number | null = null;
-      let totalWater = 0;
-
-      function collectPours(node: { ctorName?: string; children?: any }): void {
-        if (node.ctorName === "pour" && node.children?.[2]) {
-          const pourAmount = node.children[2].calculateRatio();
-          if (typeof pourAmount === "number") {
-            totalWater += pourAmount;
-          }
-        }
-
-        if (node.children) {
-          for (const child of node.children) {
-            collectPours(child);
-          }
-        }
-      }
+  semantics.addOperation("toAST", {
+    recipe(lines): RecipeAST {
+      const ast: RecipeAST = {
+        type: "recipe",
+        steps: [],
+        comments: [],
+      };
 
       for (const line of lines.children) {
-        if (line.ctorName !== "line") {
-          continue;
+        if (line.ctorName === "line") {
+          const keyword = line.children[0];
+          if (!keyword) continue;
+
+          const result = keyword.toAST();
+          if (result?.type === "brewer") {
+            ast.brewer = result.value;
+          } else if (result?.type === "dose") {
+            ast.dose = result.value;
+          } else if (result?.type === "temperature") {
+            ast.temperature = result.value;
+          } else if (result?.type === "step") {
+            ast.steps.push(result);
+          }
+        } else if (line.ctorName === "comment") {
+          const commentResult = line.toAST();
+          if (commentResult) {
+            ast.comments.push(commentResult);
+          }
         }
-
-        const keyword = line.children[0];
-        if (keyword?.ctorName === "dose" && keyword.children[2]) {
-          dose = keyword.children[2].calculateRatio();
-        } else if (keyword?.ctorName === "step") {
-          collectPours(keyword);
-        }
       }
 
-      if (!dose && !totalWater) {
-        return {
-          ratio: "Missing dose and water to calculate",
-          water: 0,
-        };
-      }
-
-      if (dose && !totalWater) {
-        return {
-          ratio: "Missing water to calculate",
-          water: 0,
-        };
-      }
-
-      if (!dose || dose === 0) {
-        return {
-          ratio: "Missing dose to calculate",
-          water: totalWater,
-        };
-      }
-
-      const ratio = totalWater / dose;
-      return {
-        ratio: `1:${ratio.toFixed(1)}`,
-        water: totalWater,
-      };
+      return ast;
     },
     _iter(...children) {
-      return (
-        children.map((c) => c.calculateRatio()).find((r) => r !== null) || null
-      );
-    },
-    number(x) {
-      return parseFloat(x.sourceString);
+      return children.map((c) => c.toAST()).filter(Boolean);
     },
     line(keyword, _space, _comment, _newline) {
-      return keyword.calculateRatio();
+      return keyword.toAST();
     },
-    newline(_) {
-      return null;
-    },
-    comment(_hash, _content) {
-      return null;
-    },
-    brewer(_keyword, _space, _content) {
-      return null;
+    brewer(_keyword, _space, content) {
+      return {
+        type: "brewer",
+        value: content.sourceString.trim(),
+      };
     },
     dose(_keyword, _space, number) {
-      return number.calculateRatio();
+      return {
+        type: "dose",
+        value: number.toAST(),
+      };
     },
-    temperature(_keyword, _space, _rangeOrNumbers) {
-      return null;
+    temperature(_keyword, _space, rangeOrNumbers) {
+      const values = rangeOrNumbers.toAST();
+      return {
+        type: "temperature",
+        value: Array.isArray(values) ? values[0] : values,
+      };
     },
     step(
       _keyword,
       _space,
-      _duration,
+      duration,
       _spaces,
-      _comment,
+      comment,
       _newline,
-      _instructions,
+      instructions,
       _end,
-    ) {
-      return null;
+    ): StepAST {
+      let commentText: string | undefined;
+      if (comment.sourceString) {
+        // comment is an _iter that may contain a comment node
+        const commentResults = comment.toAST();
+        if (Array.isArray(commentResults) && commentResults.length > 0) {
+          const commentAST = commentResults[0];
+          if (commentAST && commentAST.type === "comment") {
+            commentText = commentAST.text;
+          }
+        }
+      }
+
+      let temperature: number | undefined;
+      const instructionAstList = [];
+
+      for (const instruction of instructions.toAST()) {
+        if (instruction.type === "temperature") {
+          temperature = instruction.value;
+        } else {
+          instructionAstList.push(instruction);
+        }
+      }
+
+      return {
+        type: "step",
+        time: duration.toAST(),
+        ...(commentText && { comment: commentText }),
+        ...(temperature && { temperature }),
+        instructions: instructionAstList,
+      };
     },
-    instruction(_spaces, _content, _terminator) {
-      return null;
+    instruction(_spaces, content, _terminator) {
+      return content.toAST();
     },
-    duration(_keyword, _space, _duration) {
-      return null;
+    duration(_keyword, _space, duration): InstructionAST {
+      return {
+        type: "duration",
+        value: duration.toAST(),
+      };
     },
-    pour(_keyword, _space, _number) {
-      return null;
+    pour(_keyword, _space, number): InstructionAST {
+      return {
+        type: "pour",
+        value: number.toAST(),
+      };
     },
-    swirl(_keyword) {
-      return null;
+    swirl(_keyword): InstructionAST {
+      return {
+        type: "swirl",
+      };
     },
-    stir(_keyword) {
-      return null;
+    stir(_keyword): InstructionAST {
+      return {
+        type: "stir",
+      };
     },
-    range(_start, _dot1, _dot2, _end) {
-      return null;
+    range(start, _dot1, _dot2, end): TemperatureRange {
+      return {
+        min: start.toAST(),
+        max: end.toAST(),
+      };
     },
-    duration_number(_minutes, _colon, _seconds) {
-      return null;
+    duration_number(minutes, _colon, seconds): Duration {
+      return {
+        minutes: minutes.toAST(),
+        seconds: seconds.toAST(),
+      };
+    },
+    number(x) {
+      return parseFloat(x.sourceString);
     },
     whole_number(_digits) {
       return parseFloat(this.sourceString);
     },
     real_number(_whole, _dot, _decimal) {
       return parseFloat(this.sourceString);
+    },
+    newline(_) {
+      return null;
+    },
+    comment(_hash, content): CommentAST {
+      return {
+        type: "comment",
+        text: content.sourceString.trim(),
+      };
     },
   });
 

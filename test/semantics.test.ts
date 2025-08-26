@@ -1,7 +1,12 @@
 import { test, expect } from "bun:test";
 
 import grammar from "../src/grammar.ohm-bundle.js";
-import { newSemantics, type SemanticError } from "../src/semantics.js";
+import {
+  newSemantics,
+  type SemanticError,
+  calculateRatioFromAST,
+} from "../src/semantics.js";
+import { recipes } from "../src/recipes.js";
 
 test.each([
   ["dose 0", "Dose amount cannot be zero"],
@@ -86,7 +91,167 @@ test.each([
   const semantics = newSemantics(grammar);
   const match = grammar.match(recipe);
 
-  const result = semantics(match).calculateRatio();
+  const ast = semantics(match).toAST();
+  const result = calculateRatioFromAST(ast);
 
   expect(result).toEqual(expected);
+});
+
+test("complex recipe with multiple steps converts to AST", () => {
+  const semantics = newSemantics(grammar);
+
+  const match = grammar.match(recipes.jamesHoffmannAeropress);
+  const result = semantics(match).toAST();
+
+  expect(result).toMatchInlineSnapshot(`
+    {
+      "brewer": "aeropress",
+      "comments": [
+        {
+          "text": "James Hoffmann Ultimate AeroPress",
+          "type": "comment",
+        },
+      ],
+      "dose": 11,
+      "steps": [
+        {
+          "instructions": [
+            {
+              "text": "don't rinse paper",
+              "type": "comment",
+            },
+            {
+              "type": "pour",
+              "value": 200,
+            },
+            {
+              "text": "then place the plunger on top",
+              "type": "comment",
+            },
+          ],
+          "time": {
+            "minutes": 0,
+            "seconds": 0,
+          },
+          "type": "step",
+        },
+        {
+          "instructions": [
+            {
+              "type": "swirl",
+            },
+          ],
+          "time": {
+            "minutes": 2,
+            "seconds": 0,
+          },
+          "type": "step",
+        },
+        {
+          "instructions": [
+            {
+              "text": "press",
+              "type": "comment",
+            },
+          ],
+          "time": {
+            "minutes": 2,
+            "seconds": 30,
+          },
+          "type": "step",
+        },
+      ],
+      "temperature": {
+        "max": 99,
+        "min": 85,
+      },
+      "type": "recipe",
+    }
+  `);
+});
+
+test("complex recipe with temperature inside step to AST", () => {
+  const semantics = newSemantics(grammar);
+
+  const match = grammar.match(recipes.tetsuKasuyaHybridMethod);
+  const result = semantics(match).toAST();
+
+  expect(result).toMatchInlineSnapshot(`
+    {
+      "brewer": "hario switch",
+      "comments": [
+        {
+          "text": "Tetsu Kasuya Hybrid method",
+          "type": "comment",
+        },
+      ],
+      "dose": 20,
+      "steps": [
+        {
+          "instructions": [
+            {
+              "text": "open switch",
+              "type": "comment",
+            },
+            {
+              "type": "pour",
+              "value": 60,
+            },
+          ],
+          "temperature": 90,
+          "time": {
+            "minutes": 0,
+            "seconds": 0,
+          },
+          "type": "step",
+        },
+        {
+          "instructions": [
+            {
+              "type": "pour",
+              "value": 60,
+            },
+          ],
+          "temperature": 90,
+          "time": {
+            "minutes": 0,
+            "seconds": 30,
+          },
+          "type": "step",
+        },
+        {
+          "instructions": [
+            {
+              "text": "close switch",
+              "type": "comment",
+            },
+            {
+              "type": "pour",
+              "value": 160,
+            },
+          ],
+          "temperature": 70,
+          "time": {
+            "minutes": 1,
+            "seconds": 15,
+          },
+          "type": "step",
+        },
+        {
+          "instructions": [
+            {
+              "text": "open switch",
+              "type": "comment",
+            },
+          ],
+          "time": {
+            "minutes": 1,
+            "seconds": 45,
+          },
+          "type": "step",
+        },
+      ],
+      "type": "recipe",
+    }
+  `);
 });

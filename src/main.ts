@@ -6,7 +6,11 @@ import { oneDark } from "@codemirror/theme-one-dark";
 import grammar from "./grammar.ohm-bundle.js";
 import { recipes } from "./recipes.js";
 import { highlighting, autocomplete } from "./highlighting.js";
-import { newSemantics, type SemanticError } from "./semantics.js";
+import {
+  newSemantics,
+  type SemanticError,
+  calculateRatioFromAST,
+} from "./semantics.js";
 import { getSharedContentFromURL, shareContentViaURL } from "./share.js";
 
 const semantics = newSemantics(grammar);
@@ -25,12 +29,8 @@ function getRatioLabel(text: string): string | null {
     return "";
   }
 
-  const result: null | { ratio: string; water: number } =
-    semantics(match).calculateRatio();
-
-  if (!result) {
-    return "";
-  }
+  const ast = semantics(match).toAST();
+  const result = calculateRatioFromAST(ast);
 
   return `Ratio: ${result.ratio} | Water: ${result.water}`;
 }
