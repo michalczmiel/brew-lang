@@ -7,9 +7,11 @@ BrewLang {
   temperature = "temperature" " " (range | number)+
 
   step = "at" " " duration_number " "* comment? newline? instruction* "end"
-  instruction = " "* (duration | pour | temperature | comment) (" " | newline | &"end")
+  instruction = " "* (duration | pour | temperature | swirl | stir | comment) (" " | newline | &"end")
   duration = "duration" " " duration_number
   pour = "pour" " " number
+  swirl = "swirl"
+  stir = "stir"
 
   comment = "#" (~newline any)*
   newline = "\n"

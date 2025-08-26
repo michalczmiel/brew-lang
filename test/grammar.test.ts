@@ -79,3 +79,32 @@ test.each([
   const match = grammar.match(statement);
   expect(match.succeeded(), match.message).toBeTruthy();
 });
+
+test("correctly parses swirl instruction", () => {
+  const recipe = `at 0:00
+  swirl
+end`;
+  const match = grammar.match(recipe);
+  expect(match.succeeded(), match.message).toBeTruthy();
+});
+
+test("correctly parses stir instruction", () => {
+  const recipe = `at 0:00
+  stir
+end`;
+  const match = grammar.match(recipe);
+  expect(match.succeeded(), match.message).toBeTruthy();
+});
+
+test("correctly parses recipe with swirl and stir", () => {
+  const recipe = `dose 20
+at 0:00
+  pour 60
+  swirl
+  duration 0:30
+  stir
+  pour 100
+end`;
+  const match = grammar.match(recipe);
+  expect(match.succeeded(), match.message).toBeTruthy();
+});

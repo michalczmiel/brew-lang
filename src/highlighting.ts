@@ -12,7 +12,11 @@ export const highlighting = StreamLanguage.define({
     }
 
     // Keywords
-    if (stream.match(/\b(brewer|temperature|dose|at|pour|duration|end)\b/)) {
+    if (
+      stream.match(
+        /\b(brewer|temperature|dose|at|pour|duration|swirl|stir|end)\b/,
+      )
+    ) {
       return "keyword";
     }
 
@@ -97,6 +101,16 @@ export function autocomplete(
           label: "temperature",
           type: "keyword",
           info: "Set the temperature for this step, eg. temperature 85",
+        },
+        {
+          label: "swirl",
+          type: "keyword",
+          info: "Swirl the coffee",
+        },
+        {
+          label: "stir",
+          type: "keyword",
+          info: "Stir the coffee",
         },
         {
           label: "end",

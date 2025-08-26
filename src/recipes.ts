@@ -38,7 +38,7 @@ at 0:00
 end
 
 at 2:00
-  # gently swirl
+  swirl
 end
 
 at 2:30

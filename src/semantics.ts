@@ -126,6 +126,12 @@ export function newSemantics(grammar: Grammar): Semantics {
       }
       return [];
     },
+    swirl(_keyword) {
+      return [];
+    },
+    stir(_keyword) {
+      return [];
+    },
     range(start, _dot1, _dot2, end) {
       const startResult = start.validate();
       const endResult = end.validate();
@@ -272,6 +278,12 @@ export function newSemantics(grammar: Grammar): Semantics {
       return null;
     },
     pour(_keyword, _space, _number) {
+      return null;
+    },
+    swirl(_keyword) {
+      return null;
+    },
+    stir(_keyword) {
       return null;
     },
     range(_start, _dot1, _dot2, _end) {
