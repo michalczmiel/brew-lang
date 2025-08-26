@@ -1,6 +1,6 @@
 import { test, expect } from "bun:test";
 
-import { shouldPreventAutocomplete } from "../src/highlighting.js";
+import { shouldPreventAutocomplete } from "./highlighting";
 
 // Cases that should allow autocomplete
 test.each([

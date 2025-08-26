@@ -1,7 +1,7 @@
 import { test, expect } from "bun:test";
 
-import grammar from "../src/grammar.ohm-bundle.js";
-import { recipes } from "../src/recipes.js";
+import grammar from "./grammar.ohm-bundle.js";
+import { recipes } from "../recipes.js";
 
 test.each(Object.values(recipes))(
   "correctly parses full valid recipe",

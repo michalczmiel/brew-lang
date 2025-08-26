@@ -24,12 +24,18 @@ It's imporant that you don't run dev server unless asked. After making changes e
 
 **Core Components:**
 
-- `src/grammar.ohm` - Ohm.js grammar definition for the brew language DSL
-- `src/semantics.ts` - Semantic analysis and validation logic
-- `src/highlighting.ts` - CodeMirror syntax highlighting and autocomplete
+- `src/core/grammar.ohm` - Ohm.js grammar definition for the brew language DSL
+- `src/core/semantics.ts` - Semantic analysis and validation logic
+- `src/editor/highlighting.ts` - CodeMirror syntax highlighting and autocomplete
 - `src/main.ts` - Main editor application with CodeMirror integration
 - `src/recipes.ts` - Sample brew recipes in the DSL
-- `src/share.ts` - Share recipe via URL
+- `src/editor/share.ts` - Share recipe via URL
+
+**Test Files:**
+
+- `src/core/grammar.test.ts` - Grammar parsing tests
+- `src/core/semantics.test.ts` - Semantic analysis tests  
+- `src/editor/highlighting.test.ts` - Syntax highlighting tests
 
 **Language Structure:**
 The DSL supports brewing instructions with constructs like `brewer`, `dose`, `temperature` and timed steps with `at X:XX ... end` blocks containing `pour` and `duration` instructions. Comments use `#` syntax.

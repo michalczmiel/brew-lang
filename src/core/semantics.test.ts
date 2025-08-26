@@ -1,12 +1,12 @@
 import { test, expect } from "bun:test";
 
-import grammar from "../src/grammar.ohm-bundle.js";
+import grammar from "./grammar.ohm-bundle.js";
 import {
   newSemantics,
   type SemanticError,
   calculateRatioFromAST,
-} from "../src/semantics.js";
-import { recipes } from "../src/recipes.js";
+} from "./semantics.js";
+import { recipes } from "../recipes.js";
 
 test.each([
   ["dose 0", "Dose amount cannot be zero"],

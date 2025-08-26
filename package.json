@@ -7,9 +7,9 @@
     "build": "vite build",
     "dev": "vite",
     "check": "tsc --noEmit",
-    "lint": "biome lint ./src ./test",
-    "format": "biome format ./src ./test --write",
-    "generate": "ohm generateBundles ./src/grammar.ohm --esm"
+    "lint": "biome lint ./src",
+    "format": "biome format ./src --write",
+    "generate": "ohm generateBundles ./src/core/grammar.ohm --esm"
   },
   "author": "Michał Czmiel",
   "license": "MIT",

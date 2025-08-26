@@ -3,25 +3,18 @@ import { EditorView, keymap, type Panel, showPanel } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
 import { oneDark } from "@codemirror/theme-one-dark";
 
-import grammar from "./grammar.ohm-bundle.js";
+import grammar from "./core/grammar.ohm-bundle.js";
 import { recipes } from "./recipes.js";
-import { highlighting, autocomplete } from "./highlighting.js";
+import { highlighting, autocomplete } from "./editor/highlighting.js";
 import {
   newSemantics,
   type SemanticError,
   calculateRatioFromAST,
-} from "./semantics.js";
-import { getSharedContentFromURL, shareContentViaURL } from "./share.js";
+} from "./core/semantics.js";
+import { getSharedContentFromURL, shareContentViaURL } from "./editor/share.js";
+import { updateDarkMode, isDarkModeEnabled } from "./editor/theme.js";
 
 const semantics = newSemantics(grammar);
-
-function updateDarkMode(isDark: boolean) {
-  if (isDark) {
-    document.documentElement.classList.add("dark");
-  } else {
-    document.documentElement.classList.remove("dark");
-  }
-}
 
 function getRatioLabel(text: string): string | null {
   const match = grammar.match(text);
@@ -85,15 +78,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   const vimModeEnabled = localStorage.getItem("vim-mode") === "true";
   vimToggle.checked = vimModeEnabled;
 
-  const systemPrefersDark = window.matchMedia(
-    "(prefers-color-scheme: dark)",
-  ).matches;
-  const storedDarkMode = localStorage.getItem("dark-mode");
-  const darkModeEnabled = storedDarkMode
-    ? storedDarkMode === "true"
-    : systemPrefersDark;
-  darkToggle.checked = darkModeEnabled;
+  const darkModeEnabled = isDarkModeEnabled();
 
+  darkToggle.checked = darkModeEnabled;
   updateDarkMode(darkModeEnabled);
 
   let editor: EditorView;
@@ -226,7 +213,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     const currentDoc = editor.state.doc.toString();
     editor.destroy();
 
-    localStorage.setItem("dark-mode", isDark.toString());
     updateDarkMode(isDark);
 
     editor = await createEditor({
