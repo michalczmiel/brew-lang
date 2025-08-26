@@ -108,3 +108,9 @@ end`;
   const match = grammar.match(recipe);
   expect(match.succeeded(), match.message).toBeTruthy();
 });
+
+test("correctly parses recipe with more whitespace", () => {
+  const recipe = `dose     20\ntemperature       95\nbrewer    v60`;
+  const match = grammar.match(recipe);
+  expect(match.succeeded(), match.message).toBeTruthy();
+});

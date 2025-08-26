@@ -2,9 +2,9 @@ BrewLang {
   recipe = (line | comment | newline)*
   line = (brewer | step | temperature | dose) " "* comment? newline?
 
-  brewer = "brewer" " " (~(newline | comment) any)+
-  dose = "dose" " " number
-  temperature = "temperature" " " (range | number)+
+  brewer = "brewer" " "+ (~(newline | comment) any)+
+  dose = "dose" " "+ number
+  temperature = "temperature" " "+ (range | number)+
 
   step = "at" " " duration_number " "* comment? newline? instruction* "end"
   instruction = " "* (duration | pour | temperature | swirl | stir | comment) (" " | newline | &"end")
