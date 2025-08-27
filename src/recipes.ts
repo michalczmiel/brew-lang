@@ -1,6 +1,6 @@
 const glitchCoffeeOrigamiHot = `
-# Glitch Coffee Origami Hot Recipe
-# Paper: Karita Wave
+-- Glitch Coffee Origami Hot Recipe
+-- Paper: Karita Wave
 
 temperature 86..90
 dose 14.5
@@ -25,16 +25,16 @@ end
 `;
 
 const jamesHoffmannAeropress = `
-# James Hoffmann Ultimate AeroPress
+-- James Hoffmann Ultimate AeroPress
 
 temperature 85..99
 dose 11
 brewer aeropress
 
 at 0:00
-  # don't rinse paper
+  -- don't rinse paper
   pour 200
-  # after pouring, place the plunger on top
+  -- after pouring, place the plunger on top
 end
 
 at 2:00
@@ -42,20 +42,20 @@ at 2:00
 end
 
 at 2:30
-  # press
+  -- press
 end
 `;
 
 const tetsuKasuyaHybridMethod = `
 
-# Tetsu Kasuya Hybrid method
+-- Tetsu Kasuya Hybrid method
 
 dose 20
 brewer hario switch
 
 at 0:00
   temperature 90
-  # open switch
+  -- open switch
   pour 60
 end
 
@@ -66,12 +66,12 @@ end
 
 at 1:15
   temperature 70
-  # close switch
+  -- close switch
   pour 160
 end
 
 at 1:45
-  # open switch
+  -- open switch
 end
 
 `;

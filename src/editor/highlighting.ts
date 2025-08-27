@@ -7,7 +7,7 @@ import type {
 export const highlighting = StreamLanguage.define({
   token(stream) {
     // Comments
-    if (stream.match(/#.*/)) {
+    if (stream.match(/--.*$/)) {
       return "comment";
     }
 
@@ -48,7 +48,7 @@ export function shouldPreventAutocomplete(textBeforeCursor: string): boolean {
   }
 
   // no automcompletion in comments
-  if (textBeforeCursor.includes("#")) {
+  if (textBeforeCursor.includes("--")) {
     return true;
   }
 

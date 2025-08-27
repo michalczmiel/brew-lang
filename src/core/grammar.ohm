@@ -13,7 +13,7 @@ BrewLang {
   swirl = "swirl"
   stir = "stir"
 
-  comment = "#" (~newline any)*
+  comment = "-" "-" (~newline any)*
   newline = "\n"
 
   range = whole_number "." "." whole_number

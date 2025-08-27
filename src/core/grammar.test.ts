@@ -22,15 +22,15 @@ test("temperature without number", () => {
 });
 
 test("correctly parses single line comment", () => {
-  const match = grammar.match("# This is a comment");
+  const match = grammar.match("-- This is a comment");
   expect(match.succeeded(), match.message).toBeTruthy();
 });
 
 test("correctly parses comment with recipe elements", () => {
-  const recipe = `# Recipe for great coffee
+  const recipe = `-- Recipe for great coffee
 dose 20
 temperature 94
-# Add hot water
+-- Add hot water
 at 0:00
   pour 300
 end
@@ -41,9 +41,9 @@ end
 
 test("correctly parses comment inside step", () => {
   const recipe = `at 0:00
-  # Start the timer
+  -- Start the timer
   pour 60
-  # Wait a bit
+  -- Wait a bit
   duration 0:30
 end`;
   const match = grammar.match(recipe);
@@ -73,8 +73,8 @@ test.each(["v60", "origami", "french press", "chemex"])(
 );
 
 test.each([
-  "temperature 90..100 # depends on roast level",
-  "at 0:00 # Start the timer\nend",
+  "temperature 90..100 -- depends on roast level",
+  "at 0:00 -- Start the timer\nend",
 ])("allows for inline comment", (statement) => {
   const match = grammar.match(statement);
   expect(match.succeeded(), match.message).toBeTruthy();

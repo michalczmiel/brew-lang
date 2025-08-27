@@ -160,7 +160,7 @@ export function newSemantics(grammar: Grammar): Semantics {
     newline(_) {
       return [];
     },
-    comment(_hash, _content) {
+    comment(_dash1, _dash2, _content) {
       return [];
     },
     brewer(_keyword, _space, _content) {
@@ -409,7 +409,7 @@ export function newSemantics(grammar: Grammar): Semantics {
     newline(_) {
       return null;
     },
-    comment(_hash, content): CommentAST {
+    comment(_dash1, _dash2, content): CommentAST {
       return {
         type: "comment",
         text: content.sourceString.trim(),
