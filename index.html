@@ -227,8 +227,41 @@
           >
             AST
           </button>
+          <button
+            id="button-output-diagram"
+            role="tab"
+            tabindex="2"
+            aria-selected="false"
+          >
+            Diagram
+          </button>
+          <button
+            id="export-diagram-button"
+            style="
+              display: none;
+              margin-left: auto;
+              padding: 4px 8px;
+              border: 1px solid var(--border-color);
+              background-color: var(--bg-color);
+              color: var(--text-color);
+              font-size: 12px;
+              cursor: pointer;
+              border-radius: 4px;
+            "
+          >
+            Export SVG
+          </button>
         </div>
         <pre><code id="console" tabindex="0">No errors</code></pre>
+        <div
+          id="diagram"
+          style="
+            display: none;
+            padding: 10px;
+            overflow: auto;
+            height: calc(100vh - 100px);
+          "
+        ></div>
       </aside>
     </div>
     <script>

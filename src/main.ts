@@ -13,6 +13,7 @@ import {
 } from "./core/semantics.js";
 import { getSharedContentFromURL, shareContentViaURL } from "./editor/share.js";
 import { updateDarkMode, isDarkModeEnabled } from "./editor/theme.js";
+import { generateSVGDiagram } from "./editor/diagram.js";
 
 const semantics = newSemantics(grammar);
 
@@ -44,6 +45,7 @@ function ratioPanel(view: EditorView): Panel {
 window.addEventListener("DOMContentLoaded", async () => {
   const editorContainer = document.getElementById("editor");
   const consoleContainer = document.getElementById("console");
+  const diagramContainer = document.getElementById("diagram");
   const vimToggle = document.getElementById("vim-toggle") as HTMLInputElement;
   const darkToggle = document.getElementById("dark-toggle") as HTMLInputElement;
   const recipeSelect = document.getElementById(
@@ -61,15 +63,26 @@ window.addEventListener("DOMContentLoaded", async () => {
     "button-output-ast",
   ) as HTMLButtonElement;
 
+  const outputDiagramButton = document.getElementById(
+    "button-output-diagram",
+  ) as HTMLButtonElement;
+
+  const exportDiagramButton = document.getElementById(
+    "export-diagram-button",
+  ) as HTMLButtonElement;
+
   if (
     !editorContainer ||
     !consoleContainer ||
+    !diagramContainer ||
     !vimToggle ||
     !darkToggle ||
     !recipeSelect ||
     !shareButton ||
     !outputErrorsButton ||
-    !outputAstButton
+    !outputAstButton ||
+    !outputDiagramButton ||
+    !exportDiagramButton
   ) {
     console.error("Required elements not found in the DOM.");
     return;
@@ -90,14 +103,34 @@ window.addEventListener("DOMContentLoaded", async () => {
   let outputMode = "errors";
 
   function updateOutput(content: string): void {
-    if (!consoleContainer) return;
+    if (!consoleContainer || !diagramContainer) return;
 
     const match = grammar.match(content);
 
     if (!match.succeeded()) {
-      consoleContainer.textContent = match.message ?? "Syntax error";
+      if (outputMode === "diagram") {
+        diagramContainer.innerHTML = `<div style="padding: 20px; color: #666;">Invalid syntax - cannot generate diagram</div>`;
+      } else {
+        consoleContainer.textContent = match.message ?? "Syntax error";
+      }
       return;
     }
+
+    if (outputMode === "diagram") {
+      try {
+        const ast = semantics(match).toAST();
+        const svg = generateSVGDiagram(ast);
+        diagramContainer.innerHTML = svg;
+        consoleContainer.style.display = "none";
+        diagramContainer.style.display = "block";
+      } catch (error) {
+        diagramContainer.innerHTML = `<div style="padding: 20px; color: #666;">Error generating diagram: ${error}</div>`;
+      }
+      return;
+    }
+
+    consoleContainer.style.display = "block";
+    diagramContainer.style.display = "none";
 
     if (outputMode === "ast") {
       try {
@@ -109,7 +142,6 @@ window.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // Default to errors mode
     const semanticErrors: SemanticError[] = semantics(match).validate();
     if (semanticErrors.length > 0) {
       const errorMessages = semanticErrors
@@ -180,6 +212,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     parent: editorContainer,
   });
   editor.focus();
+
+  updateOutput(initialContent);
 
   vimToggle.addEventListener("change", async (event) => {
     if (!event.target) {
@@ -254,6 +288,9 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     outputErrorsButton.setAttribute("aria-selected", "true");
     outputAstButton.setAttribute("aria-selected", "false");
+    outputDiagramButton.setAttribute("aria-selected", "false");
+
+    exportDiagramButton.style.display = "none";
   });
 
   outputAstButton.addEventListener("click", async () => {
@@ -262,5 +299,52 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     outputAstButton.setAttribute("aria-selected", "true");
     outputErrorsButton.setAttribute("aria-selected", "false");
+    outputDiagramButton.setAttribute("aria-selected", "false");
+
+    exportDiagramButton.style.display = "none";
+  });
+
+  outputDiagramButton.addEventListener("click", async () => {
+    outputMode = "diagram";
+    updateOutput(editor.state.doc.toString());
+
+    outputDiagramButton.setAttribute("aria-selected", "true");
+    outputErrorsButton.setAttribute("aria-selected", "false");
+    outputAstButton.setAttribute("aria-selected", "false");
+
+    exportDiagramButton.style.display = "block";
+  });
+
+  function downloadSVG(svgContent: string, filename: string): void {
+    const blob = new Blob([svgContent], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  exportDiagramButton.addEventListener("click", () => {
+    if (outputMode !== "diagram") return;
+
+    const content = editor.state.doc.toString();
+    const match = grammar.match(content);
+
+    if (!match.succeeded()) return;
+
+    try {
+      const ast = semantics(match).toAST();
+      const svg = generateSVGDiagram(ast);
+      const timestamp = new Date()
+        .toISOString()
+        .slice(0, 19)
+        .replace(/:/g, "-");
+      downloadSVG(svg, `brew-recipe-diagram-${timestamp}.svg`);
+    } catch (error) {
+      console.error("Error exporting diagram:", error);
+    }
   });
 });
