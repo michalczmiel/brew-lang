@@ -1,0 +1,300 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --border-color: #ccc;
+  --sidebar-bg: #f9f9f9;
+}
+
+html.dark {
+  --bg-color: #0d1117;
+  --text-color: #f0f6fc;
+  --border-color: #30363d;
+  --sidebar-bg: #161b22;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-container {
+  display: flex;
+  height: 100vh;
+  gap: 10px;
+}
+
+.editor-section {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+#editor {
+  flex: 1;
+  min-height: 0;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-left: 10px;
+  gap: 8px;
+}
+
+.controls label {
+  color: var(--text-color);
+  font-size: 14px;
+}
+
+.controls .toggles {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+#share-button,
+#settings-button {
+  padding: 4px 12px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#share-button:hover,
+#settings-button:hover {
+  opacity: 0.8;
+}
+
+.sidebar {
+  width: 300px;
+  padding: 10px;
+  border-left: 1px solid var(--border-color);
+  background-color: var(--sidebar-bg);
+  color: var(--text-color);
+}
+
+.sidebar__controls {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.sidebar button {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  cursor: pointer;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 2px;
+  transition: border-bottom-color 0.2s ease;
+}
+
+.sidebar button[aria-selected="true"] {
+  border-bottom-color: var(--text-color);
+}
+
+.sidebar pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 12px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+
+/* Make only the console area selectable when focused */
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+#console {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  outline: none;
+  display: block;
+  width: 100%;
+  cursor: text;
+}
+
+#console:focus {
+  outline: 2px solid var(--border-color);
+  outline-offset: -2px;
+}
+
+/* Allow selection for interactive elements */
+input,
+select,
+button,
+label {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+#preferences-dialog {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  max-width: 300px;
+  width: 90vw;
+  margin: auto;
+}
+
+@media (max-width: 768px) {
+  #preferences-dialog {
+    width: 95vw;
+    max-width: none;
+    padding: 16px;
+    border-radius: 4px;
+  }
+}
+
+#preferences-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#preferences-dialog h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+}
+
+.preference-group {
+  margin-bottom: 12px;
+}
+
+.preference-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.dialog-buttons {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.dialog-buttons button {
+  padding: 8px 16px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.dialog-buttons button:hover {
+  opacity: 0.8;
+}
+
+/* Select styling */
+select {
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 14px;
+  font-family: system-ui, sans-serif;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+select:hover {
+  opacity: 0.8;
+}
+
+select:focus {
+  outline: 2px solid var(--border-color);
+  outline-offset: -1px;
+}
+
+/* Desktop-only custom styling */
+@media (min-width: 769px) and (hover: hover) and (pointer: fine) {
+  select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23666' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 8px;
+    padding-right: 24px;
+  }
+
+  html.dark select {
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23f0f6fc' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+  }
+}
+
+/* Recipe select specific styling */
+#recipe-select {
+  min-width: 200px;
+}
+
+/* Diagram styling */
+#diagram {
+  display: none;
+  padding: 10px;
+  overflow: auto;
+  height: calc(100vh - 140px);
+}
+
+/* Export diagram button styling */
+#export-diagram-button {
+  display: none;
+  margin: 10px;
+  padding: 8px 16px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  width: calc(100% - 20px);
+}
+
+#export-diagram-button:hover {
+  opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    width: auto;
+    border-left: none;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .controls {
+    flex-direction: column;
+  }
+}

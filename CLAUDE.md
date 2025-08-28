@@ -22,6 +22,11 @@ It's imporant that you don't run dev server unless asked. After making changes e
 
 ## Architecture
 
+**Web Components:**
+
+- `index.html` - HTML template for the application
+- `src/main.css` - Stylesheets
+
 **Core Components:**
 
 - `src/core/grammar.ohm` - Ohm.js grammar definition for the brew language DSL
@@ -34,7 +39,7 @@ It's imporant that you don't run dev server unless asked. After making changes e
 **Test Files:**
 
 - `src/core/grammar.test.ts` - Grammar parsing tests
-- `src/core/semantics.test.ts` - Semantic analysis tests  
+- `src/core/semantics.test.ts` - Semantic analysis tests
 - `src/editor/highlighting.test.ts` - Syntax highlighting tests
 
 **Language Structure:**
