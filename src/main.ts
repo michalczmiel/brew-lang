@@ -12,7 +12,12 @@ import {
   calculateRatioFromAST,
 } from "./core/semantics.js";
 import { getSharedContentFromURL, shareContentViaURL } from "./editor/share.js";
-import { updateDarkMode, isDarkModeEnabled } from "./editor/theme.js";
+import {
+  updateTheme,
+  getCurrentTheme,
+  isDarkModeEnabled,
+  type ThemeOption,
+} from "./editor/theme.js";
 import { generateSVGDiagram } from "./editor/diagram.js";
 
 const semantics = newSemantics(grammar);
@@ -46,14 +51,24 @@ window.addEventListener("DOMContentLoaded", async () => {
   const editorContainer = document.getElementById("editor");
   const consoleContainer = document.getElementById("console");
   const diagramContainer = document.getElementById("diagram");
-  const vimToggle = document.getElementById("vim-toggle") as HTMLInputElement;
-  const darkToggle = document.getElementById("dark-toggle") as HTMLInputElement;
+  const keymapSelect = document.getElementById(
+    "keymap-select",
+  ) as HTMLSelectElement;
+  const themeSelect = document.getElementById(
+    "theme-select",
+  ) as HTMLSelectElement;
   const recipeSelect = document.getElementById(
     "recipe-select",
   ) as HTMLSelectElement;
   const shareButton = document.getElementById(
     "share-button",
   ) as HTMLButtonElement;
+  const settingsButton = document.getElementById(
+    "settings-button",
+  ) as HTMLButtonElement;
+  const preferencesDialog = document.getElementById(
+    "preferences-dialog",
+  ) as HTMLDialogElement;
 
   const outputErrorsButton = document.getElementById(
     "button-output-errors",
@@ -75,10 +90,12 @@ window.addEventListener("DOMContentLoaded", async () => {
     !editorContainer ||
     !consoleContainer ||
     !diagramContainer ||
-    !vimToggle ||
-    !darkToggle ||
+    !keymapSelect ||
+    !themeSelect ||
     !recipeSelect ||
     !shareButton ||
+    !settingsButton ||
+    !preferencesDialog ||
     !outputErrorsButton ||
     !outputAstButton ||
     !outputDiagramButton ||
@@ -88,13 +105,15 @@ window.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const vimModeEnabled = localStorage.getItem("vim-mode") === "true";
-  vimToggle.checked = vimModeEnabled;
+  const storedKeymap = localStorage.getItem("keymap") || "default";
+  keymapSelect.value = storedKeymap;
+  const vimModeEnabled = storedKeymap === "vim";
 
+  const currentTheme = getCurrentTheme();
   const darkModeEnabled = isDarkModeEnabled();
 
-  darkToggle.checked = darkModeEnabled;
-  updateDarkMode(darkModeEnabled);
+  themeSelect.value = currentTheme;
+  updateTheme(currentTheme);
 
   let editor: EditorView;
 
@@ -215,21 +234,20 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   updateOutput(initialContent);
 
-  vimToggle.addEventListener("change", async (event) => {
+  keymapSelect.addEventListener("change", async (event) => {
     if (!event.target) {
       return;
     }
 
+    const selectedKeymap = (event.target as HTMLSelectElement).value;
     const currentDoc = editor.state.doc.toString();
     editor.destroy();
 
-    localStorage.setItem(
-      "vim-mode",
-      (event.target as HTMLInputElement).checked.toString(),
-    );
+    localStorage.setItem("keymap", selectedKeymap);
+
     editor = await createEditor({
-      useVim: (event.target as HTMLInputElement).checked,
-      useDark: darkToggle.checked,
+      useVim: selectedKeymap === "vim",
+      useDark: isDarkModeEnabled(),
       doc: currentDoc,
       parent: editorContainer,
     });
@@ -238,19 +256,21 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   });
 
-  darkToggle.addEventListener("change", async (event) => {
+  themeSelect.addEventListener("change", async (event) => {
     if (!event.target) {
       return;
     }
 
-    const isDark = (event.target as HTMLInputElement).checked;
+    const selectedTheme = (event.target as HTMLSelectElement)
+      .value as ThemeOption;
     const currentDoc = editor.state.doc.toString();
     editor.destroy();
 
-    updateDarkMode(isDark);
+    updateTheme(selectedTheme);
+    const isDark = isDarkModeEnabled();
 
     editor = await createEditor({
-      useVim: vimToggle.checked,
+      useVim: keymapSelect.value === "vim",
       useDark: isDark,
       doc: currentDoc,
       parent: editorContainer,
@@ -280,6 +300,16 @@ window.addEventListener("DOMContentLoaded", async () => {
   shareButton.addEventListener("click", async () => {
     const currentContent = editor.state.doc.toString();
     await shareContentViaURL(currentContent);
+  });
+
+  settingsButton.addEventListener("click", () => {
+    preferencesDialog.showModal();
+  });
+
+  preferencesDialog.addEventListener("click", (event) => {
+    if (event.target === preferencesDialog) {
+      preferencesDialog.close();
+    }
   });
 
   outputErrorsButton.addEventListener("click", async () => {

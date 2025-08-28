@@ -49,11 +49,11 @@
       }
 
       .controls {
+        display: flex;
+        justify-content: space-between;
         margin-bottom: 10px;
         padding-top: 10px;
         padding-left: 10px;
-        display: flex;
-        flex-direction: column;
         gap: 8px;
       }
 
@@ -68,7 +68,8 @@
         align-items: center;
       }
 
-      #share-button {
+      #share-button,
+      #settings-button {
         padding: 4px 12px;
         border: 1px solid var(--border-color);
         background-color: var(--bg-color);
@@ -78,7 +79,8 @@
         border-radius: 4px;
       }
 
-      #share-button:hover {
+      #share-button:hover,
+      #settings-button:hover {
         opacity: 0.8;
       }
 
@@ -103,6 +105,14 @@
         border: none;
         color: var(--text-color);
         cursor: pointer;
+        text-decoration: none;
+        border-bottom: 2px solid transparent;
+        padding-bottom: 2px;
+        transition: border-bottom-color 0.2s ease;
+      }
+
+      .sidebar button[aria-selected="true"] {
+        border-bottom-color: var(--text-color);
       }
 
       .sidebar pre {
@@ -149,6 +159,121 @@
         user-select: text;
       }
 
+      #preferences-dialog {
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 20px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        max-width: 300px;
+        width: 90vw;
+      }
+
+      #preferences-dialog::backdrop {
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      #preferences-dialog h3 {
+        margin: 0 0 16px 0;
+        font-size: 18px;
+      }
+
+      .preference-group {
+        margin-bottom: 12px;
+      }
+
+      .preference-group label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .dialog-buttons {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+
+      .dialog-buttons button {
+        padding: 8px 16px;
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-size: 14px;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+
+      .dialog-buttons button:hover {
+        opacity: 0.8;
+      }
+
+      /* Select styling */
+      select {
+        padding: 4px 8px;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-size: 14px;
+        font-family: system-ui, sans-serif;
+        cursor: pointer;
+        min-width: 120px;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23666' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 8px;
+        padding-right: 24px;
+      }
+
+      select:hover {
+        opacity: 0.8;
+      }
+
+      select:focus {
+        outline: 2px solid var(--border-color);
+        outline-offset: -1px;
+      }
+
+      /* Dark mode select arrow */
+      html.dark select {
+        background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23f0f6fc' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+      }
+
+      /* Recipe select specific styling */
+      #recipe-select {
+        min-width: 200px;
+      }
+
+      /* Diagram styling */
+      #diagram {
+        display: none;
+        padding: 10px;
+        overflow: auto;
+        height: calc(100vh - 140px);
+      }
+
+      /* Export diagram button styling */
+      #export-diagram-button {
+        display: none;
+        margin: 10px;
+        padding: 8px 16px;
+        border: 1px solid var(--border-color);
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        font-size: 14px;
+        cursor: pointer;
+        border-radius: 4px;
+        width: calc(100% - 20px);
+      }
+
+      #export-diagram-button:hover {
+        opacity: 0.8;
+      }
+
       @media (max-width: 768px) {
         .app-container {
           flex-direction: column;
@@ -160,6 +285,10 @@
           border-left: none;
           border-top: 1px solid var(--border-color);
         }
+
+        .controls {
+          flex-direction: column;
+        }
       }
     </style>
     <script>
@@ -167,10 +296,16 @@
         const systemPrefersDark = window.matchMedia(
           "(prefers-color-scheme: dark)",
         ).matches;
-        const storedDarkMode = localStorage.getItem("dark-mode");
-        const darkModeEnabled = storedDarkMode
-          ? storedDarkMode === "true"
-          : systemPrefersDark;
+        const storedTheme = localStorage.getItem("theme");
+
+        let darkModeEnabled;
+        if (storedTheme === "dark") {
+          darkModeEnabled = true;
+        } else if (storedTheme === "light") {
+          darkModeEnabled = false;
+        } else {
+          darkModeEnabled = systemPrefersDark;
+        }
 
         if (darkModeEnabled) {
           document.documentElement.classList.add("dark");
@@ -183,27 +318,24 @@
     <div class="app-container">
       <main class="editor-section">
         <div class="controls">
-          <label>
-            Recipe:
-            <select id="recipe-select">
-              <option value="glitchCoffeeOrigamiHot" selected>
-                Glitch Coffee Origami Hot
-              </option>
-              <option value="jamesHoffmannAeropress">
-                James Hoffmann AeroPress
-              </option>
-              <option value="tetsuKasuyaHybridMethod">
-                Tetsu Kasuya Hybrid Method
-              </option>
-            </select>
-          </label>
+          <div>
+            <label>
+              Recipe:
+              <select id="recipe-select">
+                <option value="glitchCoffeeOrigamiHot" selected>
+                  Glitch Coffee Origami Hot
+                </option>
+                <option value="jamesHoffmannAeropress">
+                  James Hoffmann AeroPress
+                </option>
+                <option value="tetsuKasuyaHybridMethod">
+                  Tetsu Kasuya Hybrid Method
+                </option>
+              </select>
+            </label>
+          </div>
           <div class="toggles">
-            <label>
-              <input type="checkbox" id="vim-toggle" /> Enable Vim Mode
-            </label>
-            <label>
-              <input type="checkbox" id="dark-toggle" /> Dark Mode
-            </label>
+            <button id="settings-button">Settings</button>
             <button id="share-button">Share</button>
           </div>
         </div>
@@ -235,35 +367,42 @@
           >
             Diagram
           </button>
-          <button
-            id="export-diagram-button"
-            style="
-              display: none;
-              margin-left: auto;
-              padding: 4px 8px;
-              border: 1px solid var(--border-color);
-              background-color: var(--bg-color);
-              color: var(--text-color);
-              font-size: 12px;
-              cursor: pointer;
-              border-radius: 4px;
-            "
-          >
-            Export SVG
-          </button>
         </div>
         <pre><code id="console" tabindex="0">No errors</code></pre>
-        <div
-          id="diagram"
-          style="
-            display: none;
-            padding: 10px;
-            overflow: auto;
-            height: calc(100vh - 100px);
-          "
-        ></div>
+        <div id="diagram"></div>
+        <button id="export-diagram-button">
+          Export SVG
+        </button>
       </aside>
     </div>
+
+    <dialog id="preferences-dialog">
+      <form method="dialog">
+        <h3>Preferences</h3>
+        <div class="preference-group">
+          <label>
+            Keymap:
+            <select id="keymap-select">
+              <option value="default">Default</option>
+              <option value="vim">Vim</option>
+            </select>
+          </label>
+        </div>
+        <div class="preference-group">
+          <label>
+            Theme:
+            <select id="theme-select">
+              <option value="system">System</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+          </label>
+        </div>
+        <div class="dialog-buttons">
+          <button type="submit">Close</button>
+        </div>
+      </form>
+    </dialog>
     <script>
       // Handle Ctrl+A/Cmd+A to select only AST content when console is focused
       document.addEventListener("keydown", function (e) {
