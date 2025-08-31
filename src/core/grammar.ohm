@@ -1,8 +1,9 @@
 BrewLang {
   recipe = (line | comment | newline)*
-  line = (brewer | step | temperature | dose) " "* comment? newline?
+  line = (brewer | step | temperature | dose | filter) " "* comment? newline?
 
   brewer = "brewer" " "+ (~(newline | comment) any)+
+  filter = "filter" " "+ (~(newline | comment) any)+
   dose = "dose" " "+ number
   temperature = "temperature" " "+ (range | number)+
 

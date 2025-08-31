@@ -307,23 +307,23 @@ window.addEventListener("DOMContentLoaded", async () => {
   settingsButton.addEventListener("click", () => {
     // Close any open selects before opening dialog (iOS Safari fix)
     // Multiple methods needed due to iOS Safari blur() limitations
-    
+
     // Method 1: Blur all select elements
-    document.querySelectorAll('select').forEach(select => {
+    document.querySelectorAll("select").forEach((select) => {
       select.blur();
     });
-    
+
     // Method 2: Blur active element if it's a select
-    if (document.activeElement && document.activeElement.tagName === 'SELECT') {
+    if (document.activeElement && document.activeElement.tagName === "SELECT") {
       (document.activeElement as HTMLElement).blur();
     }
-    
+
     // Method 3: Focus a temporary dummy element to force blur
-    const tempButton = document.createElement('button');
-    tempButton.style.position = 'absolute';
-    tempButton.style.left = '-9999px';
-    tempButton.style.opacity = '0';
-    tempButton.style.pointerEvents = 'none';
+    const tempButton = document.createElement("button");
+    tempButton.style.position = "absolute";
+    tempButton.style.left = "-9999px";
+    tempButton.style.opacity = "0";
+    tempButton.style.pointerEvents = "none";
     document.body.appendChild(tempButton);
     tempButton.focus();
     setTimeout(() => {

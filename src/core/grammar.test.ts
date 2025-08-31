@@ -72,6 +72,14 @@ test.each(["v60", "origami", "french press", "chemex"])(
   },
 );
 
+test.each(["paper", "metal", "v60 paper", "karita wave", "metal mesh"])(
+  "correctly parses different filter types",
+  (filterType) => {
+    const match = grammar.match(`filter ${filterType}`);
+    expect(match.succeeded(), match.message).toBeTruthy();
+  },
+);
+
 test.each([
   "temperature 90..100 -- depends on roast level",
   "at 0:00 -- Start the timer\nend",

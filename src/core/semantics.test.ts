@@ -58,7 +58,11 @@ test.each([
     "brewer origami\nbrewer origami dripper",
     "Recipe cannot have multiple brewer definitions",
   ],
-])("recipe cannot have multiple dose definitions", (recipe, message) => {
+  [
+    "filter paper\nfilter metal",
+    "Recipe cannot have multiple filter definitions",
+  ],
+])("recipe cannot have multiple definitions", (recipe, message) => {
   const semantics = newSemantics(grammar);
   const match = grammar.match(recipe);
 
@@ -113,6 +117,7 @@ test("complex recipe with multiple steps converts to AST", () => {
         },
       ],
       "dose": 11,
+      "filter": "paper",
       "steps": [
         {
           "comments": [
@@ -190,6 +195,7 @@ test("complex recipe with temperature inside step to AST", () => {
         },
       ],
       "dose": 20,
+      "filter": "paper",
       "steps": [
         {
           "comments": [

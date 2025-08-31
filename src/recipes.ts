@@ -1,10 +1,10 @@
 const glitchCoffeeOrigamiHot = `
 -- Glitch Coffee Origami Hot Recipe
--- Paper: Karita Wave
 
 temperature 86..90
 dose 14.5
 brewer origami
+filter karita wave
 
 at 0:00
   pour 30
@@ -30,6 +30,7 @@ const jamesHoffmannAeropress = `
 temperature 85..99
 dose 11
 brewer aeropress
+filter paper
 
 at 0:00
   -- don't rinse paper
@@ -52,6 +53,7 @@ const tetsuKasuyaHybridMethod = `
 
 dose 20
 brewer hario switch
+filter paper
 
 at 0:00
   temperature 90

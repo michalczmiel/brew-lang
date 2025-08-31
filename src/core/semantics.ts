@@ -36,6 +36,7 @@ export interface StepAST {
 export interface RecipeAST {
   type: "recipe";
   brewer?: string;
+  filter?: string;
   dose?: number;
   temperature?: TemperatureRange | number;
   steps: StepAST[];
@@ -118,6 +119,10 @@ export function newSemantics(grammar: Grammar): Semantics {
         "brewer",
         "Recipe cannot have multiple brewer definitions",
       );
+      checkDuplicates(
+        "filter",
+        "Recipe cannot have multiple filter definitions",
+      );
 
       return errors;
     },
@@ -164,6 +169,9 @@ export function newSemantics(grammar: Grammar): Semantics {
       return [];
     },
     brewer(_keyword, _space, _content) {
+      return [];
+    },
+    filter(_keyword, _space, _content) {
       return [];
     },
     dose(_keyword, _space, number) {
@@ -274,6 +282,8 @@ export function newSemantics(grammar: Grammar): Semantics {
           const result = keyword.toAST();
           if (result?.type === "brewer") {
             ast.brewer = result.value;
+          } else if (result?.type === "filter") {
+            ast.filter = result.value;
           } else if (result?.type === "dose") {
             ast.dose = result.value;
           } else if (result?.type === "temperature") {
@@ -300,6 +310,12 @@ export function newSemantics(grammar: Grammar): Semantics {
     brewer(_keyword, _space, content) {
       return {
         type: "brewer",
+        value: content.sourceString.trim(),
+      };
+    },
+    filter(_keyword, _space, content) {
+      return {
+        type: "filter",
         value: content.sourceString.trim(),
       };
     },
