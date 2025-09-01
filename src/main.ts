@@ -59,6 +59,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   const themeSelect = document.getElementById(
     "theme-select",
   ) as HTMLSelectElement;
+  const fontSizeSelect = document.getElementById(
+    "font-size-select",
+  ) as HTMLSelectElement;
   const recipeSelect = document.getElementById(
     "recipe-select",
   ) as HTMLSelectElement;
@@ -97,6 +100,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     !diagramContainer ||
     !keymapSelect ||
     !themeSelect ||
+    !fontSizeSelect ||
     !recipeSelect ||
     !shareButton ||
     !settingsButton ||
@@ -120,6 +124,18 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   themeSelect.value = currentTheme;
   updateTheme(currentTheme);
+
+  const storedFontSize = localStorage.getItem("fontSize") || "16";
+  fontSizeSelect.value = storedFontSize;
+
+  function updateEditorFontSize(fontSize: string): void {
+    document.documentElement.style.setProperty(
+      "--editor-font-size",
+      `${fontSize}px`,
+    );
+  }
+
+  updateEditorFontSize(storedFontSize);
 
   let editor: EditorView;
 
@@ -284,6 +300,16 @@ window.addEventListener("DOMContentLoaded", async () => {
     editor.dispatch({
       changes: { from: 0, to: editor.state.doc.length, insert: currentDoc },
     });
+  });
+
+  fontSizeSelect.addEventListener("change", (event) => {
+    if (!event.target) {
+      return;
+    }
+
+    const selectedFontSize = (event.target as HTMLSelectElement).value;
+    localStorage.setItem("fontSize", selectedFontSize);
+    updateEditorFontSize(selectedFontSize);
   });
 
   recipeSelect.addEventListener("change", (event) => {
