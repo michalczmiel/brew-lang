@@ -61,6 +61,13 @@ body {
   align-items: center;
 }
 
+.recipe-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#new-recipe-button,
 #share-button,
 #settings-button {
   padding: 4px 12px;
@@ -70,8 +77,12 @@ body {
   font-size: 14px;
   cursor: pointer;
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+#new-recipe-button:hover,
 #share-button:hover,
 #settings-button:hover {
   opacity: 0.8;

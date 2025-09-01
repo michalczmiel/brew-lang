@@ -11,6 +11,11 @@ export const highlighting = StreamLanguage.define({
       return "comment";
     }
 
+    // Title (# followed by text)
+    if (stream.match(/^#\s+.*$/)) {
+      return "name";
+    }
+
     // Keywords
     if (
       stream.match(
@@ -52,6 +57,11 @@ export function shouldPreventAutocomplete(textBeforeCursor: string): boolean {
     return true;
   }
 
+  // no autocompletion after title marker
+  if (textBeforeCursor.includes("#")) {
+    return true;
+  }
+
   // should not show keyword completions after Keywords that expeect value
   const expectsValueRegex =
     /\b(brewer|filter|temperature|dose|at|pour|duration)\s+\w*$/;
@@ -61,7 +71,7 @@ export function shouldPreventAutocomplete(textBeforeCursor: string): boolean {
 
   // no autocomplete after root level properties that already have values
   const rootLevelWithValueRegex =
-    /\b(dose)\s+\d+(\.\d+)?(\s+\w*)?$|temperature\s+(\d+(\.\d+)?|\d+\.\.\d+)(\s+\w*)?$|brewer\s+\w+(\s+\w*)?$|filter\s+\w+(\s+\w*)?$/;
+    /^#\s+\w+(\s+\w*)?$|\b(dose)\s+\d+(\.\d+)?(\s+\w*)?$|temperature\s+(\d+(\.\d+)?|\d+\.\.\d+)(\s+\w*)?$|brewer\s+\w+(\s+\w*)?$|filter\s+\w+(\s+\w*)?$/;
   if (rootLevelWithValueRegex.test(textBeforeCursor)) {
     return true;
   }
@@ -119,6 +129,11 @@ export function autocomplete(
         },
       ]
     : [
+        {
+          label: "#",
+          type: "keyword",
+          info: "Add a title to your recipe, eg. # My Great Recipe",
+        },
         {
           label: "brewer",
           type: "keyword",

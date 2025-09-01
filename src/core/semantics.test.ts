@@ -53,6 +53,7 @@ test.each([
 });
 
 test.each([
+  ["# My Recipe\n# Another Recipe", "Recipe cannot have multiple titles"],
   ["dose 15\ndose 20", "Recipe cannot have multiple dose definitions"],
   [
     "brewer origami\nbrewer origami dripper",
@@ -110,12 +111,7 @@ test("complex recipe with multiple steps converts to AST", () => {
   expect(result).toMatchInlineSnapshot(`
     {
       "brewer": "aeropress",
-      "comments": [
-        {
-          "text": "James Hoffmann Ultimate AeroPress",
-          "type": "comment",
-        },
-      ],
+      "comments": [],
       "dose": 11,
       "filter": "paper",
       "steps": [
@@ -174,6 +170,7 @@ test("complex recipe with multiple steps converts to AST", () => {
         "max": 99,
         "min": 85,
       },
+      "title": "James Hoffmann Ultimate AeroPress",
       "type": "recipe",
     }
   `);
@@ -188,12 +185,7 @@ test("complex recipe with temperature inside step to AST", () => {
   expect(result).toMatchInlineSnapshot(`
     {
       "brewer": "hario switch",
-      "comments": [
-        {
-          "text": "Tetsu Kasuya Hybrid method",
-          "type": "comment",
-        },
-      ],
+      "comments": [],
       "dose": 20,
       "filter": "paper",
       "steps": [
@@ -267,6 +259,7 @@ test("complex recipe with temperature inside step to AST", () => {
           "type": "step",
         },
       ],
+      "title": "Tetsu Kasuya Hybrid method",
       "type": "recipe",
     }
   `);

@@ -35,6 +35,7 @@ export interface StepAST {
 
 export interface RecipeAST {
   type: "recipe";
+  title?: string;
   brewer?: string;
   filter?: string;
   dose?: number;
@@ -114,6 +115,7 @@ export function newSemantics(grammar: Grammar): Semantics {
         }
       }
 
+      checkDuplicates("title", "Recipe cannot have multiple titles");
       checkDuplicates("dose", "Recipe cannot have multiple dose definitions");
       checkDuplicates(
         "brewer",
@@ -166,6 +168,9 @@ export function newSemantics(grammar: Grammar): Semantics {
       return [];
     },
     comment(_dash1, _dash2, _content) {
+      return [];
+    },
+    title(_keyword, _space, _content) {
       return [];
     },
     brewer(_keyword, _space, _content) {
@@ -280,7 +285,9 @@ export function newSemantics(grammar: Grammar): Semantics {
           if (!keyword) continue;
 
           const result = keyword.toAST();
-          if (result?.type === "brewer") {
+          if (result?.type === "title") {
+            ast.title = result.value;
+          } else if (result?.type === "brewer") {
             ast.brewer = result.value;
           } else if (result?.type === "filter") {
             ast.filter = result.value;
@@ -306,6 +313,12 @@ export function newSemantics(grammar: Grammar): Semantics {
     },
     line(keyword, _space, _comment, _newline) {
       return keyword.toAST();
+    },
+    title(_keyword, _space, content) {
+      return {
+        type: "title",
+        value: content.sourceString.trim(),
+      };
     },
     brewer(_keyword, _space, content) {
       return {

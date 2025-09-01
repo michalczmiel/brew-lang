@@ -31,7 +31,7 @@
     <div class="app-container">
       <main class="editor-section">
         <div class="controls">
-          <div>
+          <div class="recipe-controls">
             <label>
               Recipe:
               <select id="recipe-select">
@@ -46,6 +46,28 @@
                 </option>
               </select>
             </label>
+            <button
+              id="new-recipe-button"
+              aria-label="New Recipe"
+              title="New Recipe"
+              style="border: none"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-plus"
+              >
+                <path d="M5 12h14" />
+                <path d="M12 5v14" />
+              </svg>
+            </button>
           </div>
           <div class="toggles">
             <button

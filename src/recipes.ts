@@ -1,5 +1,5 @@
 const glitchCoffeeOrigamiHot = `
--- Glitch Coffee Origami Hot Recipe
+# Glitch Coffee Origami Hot Recipe
 
 temperature 86..90
 dose 14.5
@@ -25,7 +25,7 @@ end
 `;
 
 const jamesHoffmannAeropress = `
--- James Hoffmann Ultimate AeroPress
+# James Hoffmann Ultimate AeroPress
 
 temperature 85..99
 dose 11
@@ -48,8 +48,7 @@ end
 `;
 
 const tetsuKasuyaHybridMethod = `
-
--- Tetsu Kasuya Hybrid method
+# Tetsu Kasuya Hybrid method
 
 dose 20
 brewer hario switch

@@ -68,6 +68,9 @@ window.addEventListener("DOMContentLoaded", async () => {
   const settingsButton = document.getElementById(
     "settings-button",
   ) as HTMLButtonElement;
+  const newRecipeButton = document.getElementById(
+    "new-recipe-button",
+  ) as HTMLButtonElement;
   const preferencesDialog = document.getElementById(
     "preferences-dialog",
   ) as HTMLDialogElement;
@@ -97,6 +100,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     !recipeSelect ||
     !shareButton ||
     !settingsButton ||
+    !newRecipeButton ||
     !preferencesDialog ||
     !outputErrorsButton ||
     !outputAstButton ||
@@ -302,6 +306,23 @@ window.addEventListener("DOMContentLoaded", async () => {
   shareButton.addEventListener("click", async () => {
     const currentContent = editor.state.doc.toString();
     await shareContentViaURL(currentContent);
+  });
+
+  newRecipeButton.addEventListener("click", () => {
+    const emptyRecipe = `# New Recipe\n`;
+
+    editor.dispatch({
+      changes: {
+        from: 0,
+        to: editor.state.doc.length,
+        insert: emptyRecipe,
+      },
+    });
+
+    editor.focus();
+
+    // Reset recipe selector to show no selection
+    recipeSelect.value = "";
   });
 
   settingsButton.addEventListener("click", () => {
