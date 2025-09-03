@@ -1,6 +1,27 @@
-import { basicSetup } from "codemirror";
-import { EditorView, keymap, type Panel, showPanel } from "@codemirror/view";
-import { indentWithTab } from "@codemirror/commands";
+import {
+  EditorView,
+  keymap,
+  type Panel,
+  showPanel,
+  lineNumbers,
+  highlightActiveLineGutter,
+  highlightSpecialChars,
+  drawSelection,
+  dropCursor,
+  rectangularSelection,
+  crosshairCursor,
+  highlightActiveLine,
+} from "@codemirror/view";
+import { EditorState } from "@codemirror/state";
+import {
+  indentWithTab,
+  history,
+  defaultKeymap,
+  historyKeymap,
+} from "@codemirror/commands";
+import { indentOnInput, foldKeymap, foldGutter } from "@codemirror/language";
+import { autocompletion, completionKeymap } from "@codemirror/autocomplete";
+import { lintKeymap } from "@codemirror/lint";
 import { oneDark } from "@codemirror/theme-one-dark";
 
 import grammar from "./core/grammar.ohm-bundle.js";
@@ -216,8 +237,27 @@ window.addEventListener("DOMContentLoaded", async () => {
     parent: Element;
   }): Promise<EditorView> {
     const extensions = [
-      basicSetup,
-      keymap.of([indentWithTab]),
+      lineNumbers(),
+      foldGutter(),
+      highlightSpecialChars(),
+      history(),
+      drawSelection(),
+      dropCursor(),
+      EditorState.allowMultipleSelections.of(true),
+      indentOnInput(),
+      autocompletion(),
+      rectangularSelection(),
+      crosshairCursor(),
+      highlightActiveLine(),
+      highlightActiveLineGutter(),
+      keymap.of([
+        ...defaultKeymap,
+        ...historyKeymap,
+        ...foldKeymap,
+        ...completionKeymap,
+        ...lintKeymap,
+        indentWithTab,
+      ]),
       highlighting,
       highlighting.data.of({
         autocomplete,
