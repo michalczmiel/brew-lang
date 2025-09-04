@@ -3,6 +3,8 @@ import type { Grammar, Semantics } from "ohm-js";
 export interface SemanticError {
   message: string;
   formatted: string;
+  startIdx: number;
+  endIdx: number;
 }
 
 export interface Duration {
@@ -110,6 +112,8 @@ export function newSemantics(grammar: Grammar): Semantics {
             errors.push({
               message,
               formatted: duplicateLine.source.getLineAndColumnMessage(),
+              startIdx: duplicateLine.source.startIdx,
+              endIdx: duplicateLine.source.endIdx,
             });
           });
         }
@@ -146,6 +150,8 @@ export function newSemantics(grammar: Grammar): Semantics {
           {
             message: "Number cannot start with zero",
             formatted: this.source.getLineAndColumnMessage(),
+            startIdx: this.source.startIdx,
+            endIdx: this.source.endIdx,
           },
         ];
       }
@@ -156,6 +162,8 @@ export function newSemantics(grammar: Grammar): Semantics {
           {
             message: "Amount cannot be zero",
             formatted: this.source.getLineAndColumnMessage(),
+            startIdx: this.source.startIdx,
+            endIdx: this.source.endIdx,
           },
         ];
       }
@@ -247,6 +255,8 @@ export function newSemantics(grammar: Grammar): Semantics {
           errors.push({
             message: "Range cannot have lower bound greater than upper bound",
             formatted: this.source.getLineAndColumnMessage(),
+            startIdx: this.source.startIdx,
+            endIdx: this.source.endIdx,
           });
         }
 
@@ -254,6 +264,8 @@ export function newSemantics(grammar: Grammar): Semantics {
           errors.push({
             message: "Range cannot have lower bound equal to upper bound",
             formatted: this.source.getLineAndColumnMessage(),
+            startIdx: this.source.startIdx,
+            endIdx: this.source.endIdx,
           });
         }
       }

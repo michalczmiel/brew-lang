@@ -134,31 +134,23 @@
       <aside class="sidebar">
         <div class="sidebar__controls">
           <button
-            id="button-output-errors"
+            id="button-output-ast"
             role="tab"
             tabindex="0"
             aria-selected="true"
-          >
-            Errors
-          </button>
-          <button
-            id="button-output-ast"
-            role="tab"
-            tabindex="1"
-            aria-selected="false"
           >
             AST
           </button>
           <button
             id="button-output-diagram"
             role="tab"
-            tabindex="2"
+            tabindex="1"
             aria-selected="false"
           >
             Diagram
           </button>
         </div>
-        <pre><code id="console" tabindex="0">No errors</code></pre>
+        <pre><code id="console" tabindex="0"></code></pre>
         <div id="diagram"></div>
         <button id="export-diagram-button">Export SVG</button>
       </aside>

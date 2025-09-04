@@ -29,7 +29,6 @@ import { recipes } from "./recipes.js";
 import { highlighting, autocomplete } from "./editor/highlighting.js";
 import {
   newSemantics,
-  type SemanticError,
   calculateRatioFromAST,
 } from "./core/semantics.js";
 import { getSharedContentFromURL, shareContentViaURL } from "./editor/share.js";
@@ -40,6 +39,7 @@ import {
   type ThemeOption,
 } from "./editor/theme.js";
 import { generateSVGDiagram } from "./editor/diagram.js";
+import { brewLinter } from "./editor/linter.js";
 
 import "./main.css";
 
@@ -99,10 +99,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     "preferences-dialog",
   ) as HTMLDialogElement;
 
-  const outputErrorsButton = document.getElementById(
-    "button-output-errors",
-  ) as HTMLButtonElement;
-
   const outputAstButton = document.getElementById(
     "button-output-ast",
   ) as HTMLButtonElement;
@@ -127,7 +123,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     !settingsButton ||
     !newRecipeButton ||
     !preferencesDialog ||
-    !outputErrorsButton ||
     !outputAstButton ||
     !outputDiagramButton ||
     !exportDiagramButton
@@ -162,7 +157,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const sharedContent = getSharedContentFromURL();
   const initialContent = sharedContent || recipes.glitchCoffeeOrigamiHot;
-  let outputMode = "errors";
+  let outputMode = "ast";
 
   function updateOutput(content: string): void {
     if (!consoleContainer || !diagramContainer) return;
@@ -203,17 +198,6 @@ window.addEventListener("DOMContentLoaded", async () => {
       }
       return;
     }
-
-    const semanticErrors: SemanticError[] = semantics(match).validate();
-    if (semanticErrors.length > 0) {
-      const errorMessages = semanticErrors
-        .map((error) => `${error.formatted}${error.message}`)
-        .join("\n\n");
-      consoleContainer.textContent = errorMessages;
-      return;
-    }
-
-    consoleContainer.textContent = "No errors";
   }
 
   const updateListener = EditorView.updateListener.of((update) => {
@@ -264,6 +248,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       }),
       showPanel.of(ratioPanel),
       updateListener,
+      brewLinter,
     ];
     if (useVim) {
       const { vim } = await import("@replit/codemirror-vim");
@@ -425,23 +410,12 @@ window.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  outputErrorsButton.addEventListener("click", async () => {
-    outputMode = "errors";
-    updateOutput(editor.state.doc.toString());
-
-    outputErrorsButton.setAttribute("aria-selected", "true");
-    outputAstButton.setAttribute("aria-selected", "false");
-    outputDiagramButton.setAttribute("aria-selected", "false");
-
-    exportDiagramButton.style.display = "none";
-  });
 
   outputAstButton.addEventListener("click", async () => {
     outputMode = "ast";
     updateOutput(editor.state.doc.toString());
 
     outputAstButton.setAttribute("aria-selected", "true");
-    outputErrorsButton.setAttribute("aria-selected", "false");
     outputDiagramButton.setAttribute("aria-selected", "false");
 
     exportDiagramButton.style.display = "none";
@@ -452,7 +426,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     updateOutput(editor.state.doc.toString());
 
     outputDiagramButton.setAttribute("aria-selected", "true");
-    outputErrorsButton.setAttribute("aria-selected", "false");
     outputAstButton.setAttribute("aria-selected", "false");
 
     exportDiagramButton.style.display = "block";
