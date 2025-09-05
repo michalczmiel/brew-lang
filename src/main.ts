@@ -27,10 +27,7 @@ import { oneDark } from "@codemirror/theme-one-dark";
 import grammar from "./core/grammar.ohm-bundle.js";
 import { recipes } from "./recipes.js";
 import { highlighting, autocomplete } from "./editor/highlighting.js";
-import {
-  newSemantics,
-  calculateRatioFromAST,
-} from "./core/semantics.js";
+import { newSemantics, calculateRatioFromAST } from "./core/semantics.js";
 import { getSharedContentFromURL, shareContentViaURL } from "./editor/share.js";
 import {
   updateTheme,
@@ -409,7 +406,6 @@ window.addEventListener("DOMContentLoaded", async () => {
       preferencesDialog.close();
     }
   });
-
 
   outputAstButton.addEventListener("click", async () => {
     outputMode = "ast";

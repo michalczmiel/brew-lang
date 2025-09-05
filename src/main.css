@@ -25,7 +25,6 @@ body {
 .app-container {
   display: flex;
   height: 100vh;
-  gap: 10px;
 }
 
 .editor-section {
@@ -39,7 +38,6 @@ body {
   flex: 1;
   min-height: 0;
   font-size: var(--editor-font-size);
-  margin-bottom: 4px;
 }
 
 .controls {
@@ -60,6 +58,7 @@ body {
   display: flex;
   gap: 20px;
   align-items: center;
+  padding-right: 10px;
 }
 
 .recipe-controls {
@@ -81,12 +80,21 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.15s ease;
+  transform-origin: center;
 }
 
 #new-recipe-button:hover,
 #share-button:hover,
 #settings-button:hover {
-  opacity: 0.8;
+  background-color: var(--sidebar-bg);
+  transform: scale(1.05);
+}
+
+#new-recipe-button:active,
+#share-button:active,
+#settings-button:active {
+  transform: scale(0.95);
 }
 
 .sidebar {
@@ -309,4 +317,8 @@ select:focus {
   .controls {
     flex-direction: column;
   }
+}
+
+.cm-panel {
+  padding: 8px;
 }
