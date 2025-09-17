@@ -6,22 +6,9 @@ dose 14.5
 brewer origami
 filter karita wave
 
-at 0:00
-  pour 30
-  duration 0:05
-end
-
-at 0:20 pour 30 duration 0:05 end
-
-at 0:50
-  pour 100
-  duration 0:15
-end
-
-at 1:20
-  pour 100
-  duration 0:15
-end
+at 0:00..0:05 pour 40 end
+at 0:20..0:45 pour 100 end
+at 1:10..1:25 pour 100 end
 `;
 
 const jamesHoffmannAeropress = `

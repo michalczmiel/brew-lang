@@ -16,7 +16,6 @@ test.each([
   "20.5 ",
   "86..90 ",
   "0:30 ",
-  "duration 0:30 ",
   "at 0:30 ",
   "at 0:30\n  ",
   "at 0:00\n  p",
@@ -37,7 +36,6 @@ test.each([
   "0:",
   "0:3",
   "2:",
-  "duration 0:",
   "at 0:",
   "-- This is a comment",
   "dose 20 -- comment",
@@ -48,7 +46,6 @@ test.each([
   "dose ",
   "at ",
   "pour ",
-  "duration ",
   "brewer v",
   "temperature 9",
   "dose 2",
@@ -72,7 +69,6 @@ test.each([
   "brewer v60\ndose 20\n",
   "dose 20\ntemp",
   "at 0:00\n  pour ",
-  "at 0:30\n  duration ",
 ])("should prevent autocomplete for '%s'", (input) => {
   expect(shouldPreventAutocomplete(input)).toBe(true);
 });

@@ -44,21 +44,19 @@ test("correctly parses comment inside step", () => {
   -- Start the timer
   pour 60
   -- Wait a bit
-  duration 0:30
 end`;
   const match = grammar.match(recipe);
   expect(match.succeeded(), match.message).toBeTruthy();
 });
 
 test("correctly parses inline step format", () => {
-  const recipe = `at 0:00 pour 60 duration 0:15 end`;
+  const recipe = `at 0:00 pour 60 end`;
   const match = grammar.match(recipe);
   expect(match.succeeded(), match.message).toBeTruthy();
 });
 
 test("correctly parses mixed inline and multiline step", () => {
   const recipe = `at 0:00 pour 60
-  duration 0:30
 end`;
   const match = grammar.match(recipe);
   expect(match.succeeded(), match.message).toBeTruthy();
@@ -109,7 +107,6 @@ test("correctly parses recipe with swirl and stir", () => {
 at 0:00
   pour 60
   swirl
-  duration 0:30
   stir
   pour 100
 end`;
@@ -119,6 +116,40 @@ end`;
 
 test("correctly parses recipe with more whitespace", () => {
   const recipe = `dose     20\ntemperature       95\nbrewer    v60`;
+  const match = grammar.match(recipe);
+  expect(match.succeeded(), match.message).toBeTruthy();
+});
+
+test("correctly parses step with time range format", () => {
+  const recipe = `at 0:30..1:00
+  pour 100
+end`;
+  const match = grammar.match(recipe);
+  expect(match.succeeded(), match.message).toBeTruthy();
+});
+
+test("correctly parses step with time range inline format", () => {
+  const recipe = `at 0:30..1:00 pour 100 end`;
+  const match = grammar.match(recipe);
+  expect(match.succeeded(), match.message).toBeTruthy();
+});
+
+test("correctly parses multiple steps with mixed time formats", () => {
+  const recipe = `at 0:00
+  pour 50
+end
+
+at 1:00..1:30
+  pour 100
+end`;
+  const match = grammar.match(recipe);
+  expect(match.succeeded(), match.message).toBeTruthy();
+});
+
+test("correctly parses time range with comments", () => {
+  const recipe = `at 0:30..1:00 -- slow pour
+  pour 150
+end`;
   const match = grammar.match(recipe);
   expect(match.succeeded(), match.message).toBeTruthy();
 });

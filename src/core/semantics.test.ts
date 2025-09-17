@@ -264,3 +264,53 @@ test("complex recipe with temperature inside step to AST", () => {
     }
   `);
 });
+
+test.each([
+  [
+    "at 1:00..0:30\n  pour 100\nend",
+    "Time range end cannot be before start time",
+  ],
+  [
+    "at 1:00..1:00\n  pour 100\nend",
+    "Time range end cannot be equal to start time",
+  ],
+])("validate time range ordering", (input, expectedMessage) => {
+  const semantics = newSemantics(grammar);
+  const match = grammar.match(input);
+
+  const result: SemanticError[] = semantics(match).validate();
+
+  expect(result).toHaveLength(1);
+  expect(result[0]?.message).toBe(expectedMessage);
+});
+
+test("time range step converts to AST with endTime", () => {
+  const semantics = newSemantics(grammar);
+  const match = grammar.match("at 0:30..1:15\n  pour 150\nend");
+
+  const result = semantics(match).toAST();
+
+  expect(result.steps).toHaveLength(1);
+  expect(result.steps[0]).toEqual({
+    type: "step",
+    time: { minutes: 0, seconds: 30 },
+    endTime: { minutes: 1, seconds: 15 },
+    instructions: [{ type: "pour", value: 150 }],
+    comments: [],
+  });
+});
+
+test("single time step converts to AST without endTime", () => {
+  const semantics = newSemantics(grammar);
+  const match = grammar.match("at 1:00\n  pour 100\nend");
+
+  const result = semantics(match).toAST();
+
+  expect(result.steps).toHaveLength(1);
+  expect(result.steps[0]).toEqual({
+    type: "step",
+    time: { minutes: 1, seconds: 0 },
+    instructions: [{ type: "pour", value: 100 }],
+    comments: [],
+  });
+});

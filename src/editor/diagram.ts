@@ -188,16 +188,6 @@ export function generateSVGDiagram(
           svg += `<text x="30" y="0" class="instruction-text">stir</text>`;
           instructionX += 40;
           break;
-        case "duration":
-          if (
-            instruction.value &&
-            typeof instruction.value === "object" &&
-            "minutes" in instruction.value
-          ) {
-            svg += `<text x="0" y="0" class="instruction-text">wait ${formatDuration(instruction.value)}</text>`;
-            instructionX += 60;
-          }
-          break;
       }
 
       svg += `</g>`;

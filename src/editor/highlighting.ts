@@ -19,7 +19,7 @@ export const highlighting = StreamLanguage.define({
     // Keywords
     if (
       stream.match(
-        /\b(brewer|filter|temperature|dose|at|pour|duration|swirl|stir|end)\b/,
+        /\b(brewer|filter|temperature|dose|at|pour|swirl|stir|end)\b/,
       )
     ) {
       return "keyword";
@@ -63,8 +63,7 @@ export function shouldPreventAutocomplete(textBeforeCursor: string): boolean {
   }
 
   // should not show keyword completions after Keywords that expeect value
-  const expectsValueRegex =
-    /\b(brewer|filter|temperature|dose|at|pour|duration)\s+\w*$/;
+  const expectsValueRegex = /\b(brewer|filter|temperature|dose|at|pour)\s+\w*$/;
   if (expectsValueRegex.test(textBeforeCursor)) {
     return true;
   }
@@ -101,11 +100,6 @@ export function autocomplete(
           label: "pour",
           type: "keyword",
           info: "Pour water over coffee, eg. pour 100",
-        },
-        {
-          label: "duration",
-          type: "keyword",
-          info: "Set a duration for a step, eg. duration 0:30",
         },
         {
           label: "temperature",

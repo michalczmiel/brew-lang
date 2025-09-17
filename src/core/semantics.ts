@@ -23,13 +23,14 @@ export interface CommentAST {
 }
 
 export interface InstructionAST {
-  type: "pour" | "duration" | "swirl" | "stir";
-  value?: number | Duration | TemperatureRange;
+  type: "pour" | "swirl" | "stir";
+  value?: number | TemperatureRange;
 }
 
 export interface StepAST {
   type: "step";
   time: Duration;
+  endTime?: Duration;
   instructions: InstructionAST[];
   temperature?: TemperatureRange | number;
   comments: CommentAST[];
@@ -207,20 +208,37 @@ export function newSemantics(grammar: Grammar): Semantics {
     step(
       _keyword,
       _space,
-      _duration,
+      timing,
       _spaces,
       _comment,
       _newline,
       instructions,
       _end,
     ) {
-      return instructions.validate();
+      const errors = [];
+
+      // Validate timing
+      const timingErrors = timing.validate();
+      if (Array.isArray(timingErrors)) {
+        errors.push(...timingErrors);
+      }
+
+      // Validate instructions
+      const instructionErrors = instructions.validate();
+      if (Array.isArray(instructionErrors)) {
+        errors.push(...instructionErrors);
+      }
+
+      // Check if this is a time range (has duration_range)
+      const isTimeRange = timing.child(0)?.ctorName === "duration_range";
+
+      if (isTimeRange) {
+      }
+
+      return errors;
     },
     instruction(_spaces, content, _terminator) {
       return content.validate();
-    },
-    duration(_keyword, _space, _duration) {
-      return [];
     },
     pour(_keyword, _space, number) {
       const result = number.validate();
@@ -263,6 +281,54 @@ export function newSemantics(grammar: Grammar): Semantics {
         if (startResult === endResult) {
           errors.push({
             message: "Range cannot have lower bound equal to upper bound",
+            formatted: this.source.getLineAndColumnMessage(),
+            startIdx: this.source.startIdx,
+            endIdx: this.source.endIdx,
+          });
+        }
+      }
+
+      return errors;
+    },
+    timing(timeValue) {
+      return timeValue.validate();
+    },
+    duration_range(start, _dots, end) {
+      const startResult = start.validate();
+      const endResult = end.validate();
+      const errors: SemanticError[] = [];
+
+      if (Array.isArray(startResult)) {
+        errors.push(...startResult);
+      }
+      if (Array.isArray(endResult)) {
+        errors.push(...endResult);
+      }
+
+      // Only proceed with range validation if both start and end validation returned empty arrays (no errors)
+      if (
+        Array.isArray(startResult) &&
+        Array.isArray(endResult) &&
+        startResult.length === 0 &&
+        endResult.length === 0
+      ) {
+        const startTime = start.toAST();
+        const endTime = end.toAST();
+        const startTotalSeconds = startTime.minutes * 60 + startTime.seconds;
+        const endTotalSeconds = endTime.minutes * 60 + endTime.seconds;
+
+        if (endTotalSeconds < startTotalSeconds) {
+          errors.push({
+            message: "Time range end cannot be before start time",
+            formatted: this.source.getLineAndColumnMessage(),
+            startIdx: this.source.startIdx,
+            endIdx: this.source.endIdx,
+          });
+        }
+
+        if (endTotalSeconds === startTotalSeconds) {
+          errors.push({
+            message: "Time range end cannot be equal to start time",
             formatted: this.source.getLineAndColumnMessage(),
             startIdx: this.source.startIdx,
             endIdx: this.source.endIdx,
@@ -360,7 +426,7 @@ export function newSemantics(grammar: Grammar): Semantics {
     step(
       _keyword,
       _space,
-      duration,
+      timing,
       _spaces,
       comment,
       _newline,
@@ -393,22 +459,25 @@ export function newSemantics(grammar: Grammar): Semantics {
         }
       }
 
-      return {
+      const timingResult = timing.toAST();
+      const isTimeRange = timing.child(0)?.ctorName === "duration_range";
+
+      const result: StepAST = {
         type: "step",
-        time: duration.toAST(),
+        time: isTimeRange ? timingResult.start : timingResult,
         comments,
         instructions: instructionAstList,
         ...(temperature && { temperature }),
       };
+
+      if (isTimeRange) {
+        result.endTime = timingResult.end;
+      }
+
+      return result;
     },
     instruction(_spaces, content, _terminator) {
       return content.toAST();
-    },
-    duration(_keyword, _space, duration): InstructionAST {
-      return {
-        type: "duration",
-        value: duration.toAST(),
-      };
     },
     pour(_keyword, _space, number): InstructionAST {
       return {
@@ -430,6 +499,15 @@ export function newSemantics(grammar: Grammar): Semantics {
       return {
         min: start.toAST(),
         max: end.toAST(),
+      };
+    },
+    timing(timeValue) {
+      return timeValue.toAST();
+    },
+    duration_range(start, _dots, end) {
+      return {
+        start: start.toAST(),
+        end: end.toAST(),
       };
     },
     duration_number(minutes, _colon, seconds): Duration {
