@@ -147,6 +147,12 @@ end`;
   assertValidGrammar(recipe);
 });
 
+test("correctly parses steps with more new line", () => {
+  const recipe = `at 0:00\n\npour 50\n\nend`;
+
+  assertValidGrammar(recipe);
+});
+
 test("correctly parses time range with comments", () => {
   const recipe = `at 0:30..1:00 -- slow pour
   pour 150
