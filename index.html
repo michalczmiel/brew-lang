@@ -137,12 +137,12 @@
       <aside class="sidebar">
         <div class="sidebar__controls">
           <button
-            id="button-output-ast"
+            id="button-output-timer"
             role="tab"
             tabindex="0"
             aria-selected="true"
           >
-            AST
+            Timer
           </button>
           <button
             id="button-output-diagram"
@@ -152,9 +152,18 @@
           >
             Diagram
           </button>
+          <button
+            id="button-output-ast"
+            role="tab"
+            tabindex="2"
+            aria-selected="false"
+          >
+            AST
+          </button>
         </div>
         <pre><code id="console" tabindex="0"></code></pre>
         <div id="diagram"></div>
+        <div id="timer"></div>
         <button id="export-diagram-button">Export SVG</button>
       </aside>
     </div>
@@ -170,8 +179,16 @@
               <option value="vim">Vim</option>
             </select>
           </label>
-          <small style="color: var(--text-muted, #666); font-size: 0.85em; margin-top: 4px; display: block;">
-            Note: When using Vim keymap, consider disabling browser Vim extensions to avoid conflicts.
+          <small
+            style="
+              color: var(--text-muted, #666);
+              font-size: 0.85em;
+              margin-top: 4px;
+              display: block;
+            "
+          >
+            Note: When using Vim keymap, consider disabling browser Vim
+            extensions to avoid conflicts.
           </small>
         </div>
         <div class="preference-group">

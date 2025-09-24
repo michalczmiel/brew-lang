@@ -37,6 +37,7 @@ import {
 } from "./editor/theme.js";
 import { generateSVGDiagram } from "./editor/diagram.js";
 import { brewLinter } from "./editor/linter.js";
+import { createTimerInterface } from "./editor/timer.js";
 
 import "./main.css";
 
@@ -71,6 +72,7 @@ window.addEventListener("DOMContentLoaded", async () => {
   const editorContainer = document.getElementById("editor");
   const consoleContainer = document.getElementById("console");
   const diagramContainer = document.getElementById("diagram");
+  const timerContainer = document.getElementById("timer");
   const keymapSelect = document.getElementById(
     "keymap-select",
   ) as HTMLSelectElement;
@@ -104,6 +106,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     "button-output-diagram",
   ) as HTMLButtonElement;
 
+  const outputTimerButton = document.getElementById(
+    "button-output-timer",
+  ) as HTMLButtonElement;
+
   const exportDiagramButton = document.getElementById(
     "export-diagram-button",
   ) as HTMLButtonElement;
@@ -112,6 +118,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     !editorContainer ||
     !consoleContainer ||
     !diagramContainer ||
+    !timerContainer ||
     !keymapSelect ||
     !themeSelect ||
     !fontSizeSelect ||
@@ -122,6 +129,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     !preferencesDialog ||
     !outputAstButton ||
     !outputDiagramButton ||
+    !outputTimerButton ||
     !exportDiagramButton
   ) {
     console.error("Required elements not found in the DOM.");
@@ -154,38 +162,56 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   const sharedContent = getSharedContentFromURL();
   const initialContent = sharedContent || recipes.glitchCoffeeOrigamiHot;
-  let outputMode = "ast";
+  let outputMode: "ast" | "diagram" | "timer" = "timer";
 
   function updateOutput(content: string): void {
-    if (!consoleContainer || !diagramContainer) return;
+    if (!consoleContainer || !diagramContainer || !timerContainer) return;
 
     const match = grammar.match(content);
 
     if (!match.succeeded()) {
       if (outputMode === "diagram") {
         diagramContainer.innerHTML = `<div style="padding: 20px; color: #666;">Invalid syntax - cannot generate diagram</div>`;
+      } else if (outputMode === "timer") {
+        timerContainer.innerHTML = `<div style="padding: 20px; color: #666;">Invalid syntax - cannot create timer</div>`;
       } else {
         consoleContainer.textContent = match.message ?? "Syntax error";
       }
       return;
     }
 
+    // Hide all containers first
+    consoleContainer.style.display = "none";
+    diagramContainer.style.display = "none";
+    timerContainer.style.display = "none";
+
     if (outputMode === "diagram") {
       try {
         const ast = semantics(match).toAST();
         const svg = generateSVGDiagram(ast);
         diagramContainer.innerHTML = svg;
-        consoleContainer.style.display = "none";
         diagramContainer.style.display = "block";
       } catch (error) {
         diagramContainer.innerHTML = `<div style="padding: 20px; color: #666;">Error generating diagram: ${error}</div>`;
+        diagramContainer.style.display = "block";
       }
       return;
     }
 
-    consoleContainer.style.display = "block";
-    diagramContainer.style.display = "none";
+    if (outputMode === "timer") {
+      try {
+        const ast = semantics(match).toAST();
+        createTimerInterface(timerContainer, ast);
+        timerContainer.style.display = "block";
+      } catch (error) {
+        timerContainer.innerHTML = `<div style="padding: 20px; color: #666;">Error creating timer: ${error}</div>`;
+        timerContainer.style.display = "block";
+      }
+      return;
+    }
 
+    // Default to AST mode
+    consoleContainer.style.display = "block";
     if (outputMode === "ast") {
       try {
         const ast = semantics(match).toAST();
@@ -413,6 +439,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     outputAstButton.setAttribute("aria-selected", "true");
     outputDiagramButton.setAttribute("aria-selected", "false");
+    outputTimerButton.setAttribute("aria-selected", "false");
 
     exportDiagramButton.style.display = "none";
   });
@@ -423,8 +450,20 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     outputDiagramButton.setAttribute("aria-selected", "true");
     outputAstButton.setAttribute("aria-selected", "false");
+    outputTimerButton.setAttribute("aria-selected", "false");
 
     exportDiagramButton.style.display = "block";
+  });
+
+  outputTimerButton.addEventListener("click", async () => {
+    outputMode = "timer";
+    updateOutput(editor.state.doc.toString());
+
+    outputTimerButton.setAttribute("aria-selected", "true");
+    outputAstButton.setAttribute("aria-selected", "false");
+    outputDiagramButton.setAttribute("aria-selected", "false");
+
+    exportDiagramButton.style.display = "none";
   });
 
   function downloadSVG(svgContent: string, filename: string): void {
