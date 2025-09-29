@@ -7,6 +7,9 @@ interface TimerStep {
   endTime?: number; // seconds from recipe start (for ranges)
   step: StepAST;
   isRange: boolean;
+  stepWater: number; // water poured in this step only (grams)
+  cumulativeWater: number; // total water up to and including this step (grams)
+  totalWater: number; // total water in entire recipe (grams)
 }
 
 interface TimerState {
@@ -35,21 +38,46 @@ export class BrewTimer {
   }
 
   #processSteps(steps: StepAST[]): TimerStep[] {
-    return steps
+    const processedSteps = steps
       .map((step): TimerStep => {
         const startTime = step.time.minutes * 60 + step.time.seconds;
         const endTime = step.endTime
           ? step.endTime.minutes * 60 + step.endTime.seconds
           : undefined;
 
+        const stepWater = step.instructions.reduce((sum, instruction) => {
+          return instruction.type === "pour" &&
+            typeof instruction.value === "number"
+            ? sum + instruction.value
+            : sum;
+        }, 0);
+
         return {
           startTime,
           ...(endTime !== undefined && { endTime }),
           step,
           isRange: !!step.endTime,
+          stepWater,
+          cumulativeWater: 0,
+          totalWater: 0,
         };
       })
       .sort((a, b) => a.startTime - b.startTime);
+
+    const totalWater = processedSteps.reduce(
+      (sum, step) => sum + step.stepWater,
+      0,
+    );
+
+    let cumulative = 0;
+    return processedSteps.map((step) => {
+      cumulative += step.stepWater;
+      return {
+        ...step,
+        cumulativeWater: cumulative,
+        totalWater,
+      };
+    });
   }
 
   #formatTime(seconds: number): string {
@@ -185,6 +213,9 @@ export function createTimerInterface(
           <span class="time-separator">/</span>
           <span class="total-time">0:00</span>
         </div>
+        <div class="progress-bar">
+          <div class="timer-progress"></div>
+        </div>
       </div>
 
       <div class="all-steps">
@@ -203,6 +234,7 @@ export function createTimerInterface(
   // Get references to UI elements
   const elapsedTimeEl = container.querySelector(".elapsed-time") as HTMLElement;
   const totalTimeEl = container.querySelector(".total-time") as HTMLElement;
+  const progressEl = container.querySelector(".timer-progress") as HTMLElement;
   const allStepsEl = container.querySelector(".all-steps") as HTMLElement;
   const playPauseBtn = container.querySelector(
     ".play-pause-btn",
@@ -218,6 +250,12 @@ export function createTimerInterface(
 
     elapsedTimeEl.textContent = state.elapsedFormatted;
     totalTimeEl.textContent = state.totalFormatted;
+
+    const progress =
+      state.totalSeconds > 0
+        ? (state.elapsedSeconds / state.totalSeconds) * 100
+        : 0;
+    progressEl.style.width = `${progress}%`;
 
     // Update all steps with details/summary elements
     const existingSteps = allStepsEl.children.length;
@@ -264,7 +302,10 @@ export function createTimerInterface(
           : null;
         const timeRange = endTime ? `${startTime} - ${endTime}` : startTime;
 
-        summaryEl.textContent = `${index + 1}. ${timeRange}`;
+        const waterInfo =
+          timerStep.stepWater > 0 ? ` (${timerStep.cumulativeWater}g)` : "";
+
+        summaryEl.textContent = `${index + 1}. ${timeRange}${waterInfo}`;
 
         // Build instructions
         const instructions = timerStep.step.instructions.map((inst) => {
