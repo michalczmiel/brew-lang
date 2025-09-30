@@ -94,7 +94,8 @@ body {
 
 #new-recipe-button,
 #share-button,
-#settings-button {
+#settings-button,
+#help-button {
   padding: 6px 10px;
   border: 1px solid var(--border-muted);
   background-color: var(--bg-color);
@@ -113,7 +114,8 @@ body {
 
 #new-recipe-button:hover,
 #share-button:hover,
-#settings-button:hover {
+#settings-button:hover,
+#help-button:hover {
   background-color: var(--hover-bg);
   border-color: var(--border-color);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -121,7 +123,8 @@ body {
 
 #new-recipe-button:active,
 #share-button:active,
-#settings-button:active {
+#settings-button:active,
+#help-button:active {
   background-color: var(--active-bg);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   transform: translateY(1px);
@@ -129,7 +132,8 @@ body {
 
 #new-recipe-button:focus-visible,
 #share-button:focus-visible,
-#settings-button:focus-visible {
+#settings-button:focus-visible,
+#help-button:focus-visible {
   outline: 2px solid var(--focus-color);
   outline-offset: 2px;
 }
@@ -252,20 +256,26 @@ label {
   user-select: text;
 }
 
+#help-dialog,
 #preferences-dialog {
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 24px;
   background-color: var(--bg-color);
   color: var(--text-color);
-  max-width: 360px;
+  max-width: 480px;
   width: 90vw;
   margin: auto;
   box-shadow: var(--shadow-md);
   font-size: 14px;
 }
 
+#preferences-dialog {
+  max-width: 360px;
+}
+
 @media (max-width: 768px) {
+  #help-dialog,
   #preferences-dialog {
     width: 95vw;
     max-width: none;
@@ -274,8 +284,74 @@ label {
   }
 }
 
+#help-dialog::backdrop,
 #preferences-dialog::backdrop {
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+#help-dialog h3,
+#help-dialog h4 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+#help-dialog h4 {
+  font-size: 15px;
+  margin-top: 20px;
+}
+
+#help-dialog p {
+  margin: 0 0 16px 0;
+  line-height: 1.6;
+}
+
+#help-dialog ul {
+  margin: 0 0 16px 0;
+  padding-left: 20px;
+  line-height: 1.8;
+}
+
+#help-dialog li {
+  margin-bottom: 6px;
+}
+
+#help-dialog code {
+  background-color: var(--hover-bg);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family:
+    "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", Consolas, "Courier New",
+    monospace;
+  font-size: 13px;
+}
+
+.help-examples {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 8px 0 16px 0;
+}
+
+@media (max-width: 768px) {
+  .help-examples {
+    grid-template-columns: 1fr;
+  }
+}
+
+#help-dialog pre {
+  background-color: var(--hover-bg);
+  padding: 12px;
+  border-radius: 6px;
+  overflow-x: auto;
+  margin: 0;
+  border: 1px solid var(--border-muted);
+}
+
+#help-dialog pre code {
+  background-color: transparent;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 #preferences-dialog h3 {

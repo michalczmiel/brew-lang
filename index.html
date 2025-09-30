@@ -74,6 +74,29 @@
           </div>
           <div class="toggles">
             <button
+              id="help-button"
+              aria-label="Help"
+              title="Help"
+              style="border: none"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-help-circle"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <path d="M12 17h.01" />
+              </svg>
+            </button>
+            <button
               id="settings-button"
               aria-label="Settings"
               title="Settings"
@@ -167,6 +190,56 @@
         <button id="export-diagram-button">Export SVG</button>
       </aside>
     </div>
+
+    <dialog id="help-dialog">
+      <form method="dialog">
+        <h3>Brew Language</h3>
+        <p>
+          A DSL for writing coffee brew recipes. Create and share pour-over
+          recipes with precise timing and temperature control.
+        </p>
+
+        <h4>Basic Syntax</h4>
+        <ul>
+          <li><code>dose 15</code> — Coffee weight in grams</li>
+          <li><code>temperature 90</code> — Water temperature in °C</li>
+          <li><code>brewer origami</code> — Brewing device</li>
+          <li><code>filter paper</code> — Filter type</li>
+          <li><code>-- comment</code> — Comments</li>
+        </ul>
+
+        <h4>Timed Steps</h4>
+        <div class="help-examples">
+          <pre><code>at 0:00..0:10
+  pour 50
+end</code></pre>
+          <pre><code>at 2:00
+  swirl
+  -- gently
+end</code></pre>
+        </div>
+
+        <h4>Editor Features</h4>
+        <ul>
+          <li><strong>Timer</strong> — Interactive brew timer</li>
+          <li><strong>Diagram</strong> — Visual timeline</li>
+          <li><strong>Linting</strong> — Real-time syntax validation</li>
+          <li>
+            <strong>Status bar</strong> — Auto-calculates ratio & total water
+          </li>
+          <li><strong>Share</strong> — Copy recipe URL</li>
+          <li><strong>Vim mode</strong> — Available in settings</li>
+        </ul>
+
+        <p style="color: var(--text-muted); font-size: 13px; margin-top: 16px">
+          This project is in active development.
+        </p>
+
+        <div class="dialog-buttons">
+          <button type="submit">Get Started</button>
+        </div>
+      </form>
+    </dialog>
 
     <dialog id="preferences-dialog">
       <form method="dialog">

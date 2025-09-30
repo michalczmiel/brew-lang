@@ -91,11 +91,17 @@ window.addEventListener("DOMContentLoaded", async () => {
   const settingsButton = document.getElementById(
     "settings-button",
   ) as HTMLButtonElement;
+  const helpButton = document.getElementById(
+    "help-button",
+  ) as HTMLButtonElement;
   const newRecipeButton = document.getElementById(
     "new-recipe-button",
   ) as HTMLButtonElement;
   const preferencesDialog = document.getElementById(
     "preferences-dialog",
+  ) as HTMLDialogElement;
+  const helpDialog = document.getElementById(
+    "help-dialog",
   ) as HTMLDialogElement;
 
   const outputAstButton = document.getElementById(
@@ -125,8 +131,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     !recipeSelect ||
     !shareButton ||
     !settingsButton ||
+    !helpButton ||
     !newRecipeButton ||
     !preferencesDialog ||
+    !helpDialog ||
     !outputAstButton ||
     !outputDiagramButton ||
     !outputTimerButton ||
@@ -304,6 +312,12 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   updateOutput(initialContent);
 
+  const hasSeenHelp = localStorage.getItem("hasSeenHelp");
+  if (!hasSeenHelp) {
+    helpDialog.showModal();
+    localStorage.setItem("hasSeenHelp", "true");
+  }
+
   keymapSelect.addEventListener("change", async (event) => {
     if (!event.target) {
       return;
@@ -397,6 +411,16 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     // Reset recipe selector to show no selection
     recipeSelect.value = "";
+  });
+
+  helpButton.addEventListener("click", () => {
+    helpDialog.showModal();
+  });
+
+  helpDialog.addEventListener("click", (event) => {
+    if (event.target === helpDialog) {
+      helpDialog.close();
+    }
   });
 
   settingsButton.addEventListener("click", () => {
