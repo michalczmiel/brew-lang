@@ -120,6 +120,10 @@ window.addEventListener("DOMContentLoaded", async () => {
     "export-diagram-button",
   ) as HTMLButtonElement;
 
+  const printDiagramButton = document.getElementById(
+    "print-diagram-button",
+  ) as HTMLButtonElement;
+
   if (
     !editorContainer ||
     !consoleContainer ||
@@ -138,7 +142,8 @@ window.addEventListener("DOMContentLoaded", async () => {
     !outputAstButton ||
     !outputDiagramButton ||
     !outputTimerButton ||
-    !exportDiagramButton
+    !exportDiagramButton ||
+    !printDiagramButton
   ) {
     console.error("Required elements not found in the DOM.");
     return;
@@ -466,6 +471,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     outputTimerButton.setAttribute("aria-selected", "false");
 
     exportDiagramButton.style.display = "none";
+    printDiagramButton.style.display = "none";
   });
 
   outputDiagramButton.addEventListener("click", async () => {
@@ -477,6 +483,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     outputTimerButton.setAttribute("aria-selected", "false");
 
     exportDiagramButton.style.display = "block";
+    printDiagramButton.style.display = "block";
   });
 
   outputTimerButton.addEventListener("click", async () => {
@@ -488,6 +495,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     outputDiagramButton.setAttribute("aria-selected", "false");
 
     exportDiagramButton.style.display = "none";
+    printDiagramButton.style.display = "none";
   });
 
   function downloadSVG(svgContent: string, filename: string): void {
@@ -521,5 +529,11 @@ window.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       console.error("Error exporting diagram:", error);
     }
+  });
+
+  printDiagramButton.addEventListener("click", () => {
+    if (outputMode !== "diagram") return;
+
+    window.print();
   });
 });

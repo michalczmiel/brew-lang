@@ -507,10 +507,17 @@ select:focus {
   background-color: var(--text-muted);
 }
 
-/* Export diagram button styling */
-#export-diagram-button {
-  display: none;
+/* Diagram actions container */
+.diagram-actions {
+  display: flex;
+  gap: 8px;
   margin: 12px;
+}
+
+/* Export and print diagram button styling */
+#export-diagram-button,
+#print-diagram-button {
+  display: none;
   padding: 10px 16px;
   border: 1px solid var(--border-color);
   background-color: var(--bg-color);
@@ -519,23 +526,26 @@ select:focus {
   font-weight: 500;
   cursor: pointer;
   border-radius: 6px;
-  width: calc(100% - 24px);
+  flex: 1;
   box-shadow: var(--shadow-sm);
   transition: all 0.12s cubic-bezier(0.02, 0.01, 0.47, 1);
 }
 
-#export-diagram-button:hover {
+#export-diagram-button:hover,
+#print-diagram-button:hover {
   background-color: var(--hover-bg);
   border-color: var(--focus-color);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
-#export-diagram-button:active {
+#export-diagram-button:active,
+#print-diagram-button:active {
   background-color: var(--active-bg);
   transform: translateY(1px);
 }
 
-#export-diagram-button:focus-visible {
+#export-diagram-button:focus-visible,
+#print-diagram-button:focus-visible {
   outline: 2px solid var(--focus-color);
   outline-offset: 2px;
 }
@@ -559,4 +569,29 @@ select:focus {
 
 .cm-panel {
   padding: 8px;
+}
+
+/* Print styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  #diagram,
+  #diagram * {
+    visibility: visible;
+  }
+
+  #diagram {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .diagram-actions {
+    display: none;
+  }
 }
