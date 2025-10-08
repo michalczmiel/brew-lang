@@ -23,13 +23,13 @@ function addDuration(base: Duration, toAdd: Duration): Duration {
 }
 
 const icons = {
-  water: `<path d="M12 3c0 0-3.5 3.5-3.5 6.5c0 1.93 1.57 3.5 3.5 3.5s3.5-1.57 3.5-3.5c0-3-3.5-6.5-3.5-6.5z" fill="none" stroke="currentColor" stroke-width="1.2"/>`,
-  coffee: `<circle cx="12" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="12" r="0.8" fill="currentColor"/>`,
-  swirl: `<path d="M12 7c1.5 0 2.5 2 2.5 5s-1 5-2.5 5m0-10c-1.5 0-2.5 2-2.5 5s1 5 2.5 5" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>`,
-  stir: `<circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="1.2" stroke-dasharray="1.5,2"/><path d="M12 8v8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>`,
-  thermometer: `<rect x="10.5" y="4" width="3" height="11" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="17.5" r="2.5" fill="currentColor"/><line x1="12" y1="7" x2="12" y2="15" stroke="white" stroke-width="1"/>`,
-  brewer: `<path d="M7 4h10v2.5c0 3.5-1.5 6.5-3.5 7.5h-3c-2-1-3.5-4-3.5-7.5V4z" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="6" y1="4" x2="18" y2="4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M9 14v3.5h6V14" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>`,
-  timer: `<circle cx="12" cy="12.5" r="6" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M12 8.5v4l1.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><line x1="10.5" y1="3" x2="13.5" y2="3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>`,
+  water: `<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+  coffee: `<path d="M10 2v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 2v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 2v2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+  swirl: `<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M21 3v5h-5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+  stir: `<circle cx="9" cy="9" r="7" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="15" cy="15" r="7" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+  thermometer: `<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+  brewer: `<path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.453 15h11.094" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 2h7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>`,
+  timer: `<line x1="10" x2="14" y1="2" y2="2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" x2="15" y1="14" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="14" r="8" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>`,
 } as const;
 
 export function generateSVGDiagram(
